@@ -34,7 +34,6 @@ export class Blog {
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);
 
-
 //
 // const blogSchema = new mongoose.Schema<BlogDbType>({
 //     name: {type: String, require: true},
