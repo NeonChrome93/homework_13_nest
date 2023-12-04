@@ -16,7 +16,7 @@ import {BlogQueryRepository} from "./blog.query.repository";
 import {BlogService} from "./blog.service";
 import {BlogRepository} from "./blog.repository";
 import {getQueryPagination} from "../utils/pagination";
-import {BlogsQueryType, CreateBlogType, UpdateBlogType} from "../models/blog-models";
+import {BlogsQueryType, CreateBlogType, UpdateBlogType} from "../models/blogs-models";
 
 
 

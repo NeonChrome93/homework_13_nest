@@ -1,7 +1,7 @@
 
 import {BlogRepository} from "./blog.repository";
 import {Injectable} from "@nestjs/common";
-import {Blog, BlogsOutputType, CreateBlogType, UpdateBlogType} from "../models/blog-models";
+import {Blog, BlogsOutputType, CreateBlogType, UpdateBlogType} from "../models/blogs-models";
 
 // query - get
 // commands - post | put | delete

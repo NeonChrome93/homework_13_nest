@@ -2,7 +2,7 @@ import {FilterQuery, Model} from "mongoose";
 import {ObjectId, WithId} from "mongodb";
 import {Injectable} from "@nestjs/common";
 import {QueryPaginationType} from "../utils/pagination";
-import {BlogsOutputType} from "../models/blog-models";
+import {BlogsOutputType} from "../models/blogs-models";
 import {Blog, BlogDbType, BlogDocument} from "./blog.model";
 import {InjectModel} from "@nestjs/mongoose";
 

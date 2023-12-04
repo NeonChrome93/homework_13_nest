@@ -32,6 +32,7 @@ export class Blog {
 }
 //читать как сделать агрегацию двух схем
 //почитать про $lookup
+//сделать две схемы под посты и под лайки и обращаться к ним по отдельности
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);
 

@@ -1,7 +1,7 @@
 import {ObjectId} from "mongodb";
 import mongoose, {FilterQuery, Model, UpdateQuery} from "mongoose";
 import {Injectable} from "@nestjs/common";
-import {Blog, BlogsOutputType, UpdateBlogType} from "../models/blog-models";
+import {Blog, BlogsOutputType, UpdateBlogType} from "../models/blogs-models";
 import {InjectModel} from "@nestjs/mongoose";
 import {BlogDocument} from "./blog.model";
 
