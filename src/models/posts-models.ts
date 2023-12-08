@@ -11,6 +11,7 @@ export type PostType = {
     "blogId": string,
     "blogName": string,
     "createdAt": string
+    reactions: []
 }
 
 export type NewestLikeType = {
@@ -45,6 +46,13 @@ export type createPostType = {
 }
 
 
+
+export type UpdatePostType = {
+    "title": string,
+    "shortDescription": string,
+    "content": string,
+    "blogId": string,
+}
 
 export type PostsQueryType = {
     pageNumber: string,

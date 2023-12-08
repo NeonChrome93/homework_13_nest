@@ -3,7 +3,7 @@ import mongoose, {HydratedDocument, Types} from "mongoose";
 import {REACTIONS_ENUM} from "../models/comments-models";
 import {Prop, Schema, SchemaFactory} from "@nestjs/mongoose";
 
-export type postDto = {
+export type postDbType= {
     _id: ObjectId,
     title: string,
     shortDescription: string,
@@ -34,7 +34,7 @@ export class Post {
     blogName: string
     @Prop({default: new Date})
     createdAt: Date
-    @Prop({default: []})
+    @Prop()
     reactions: StatusType[]
 
 }
