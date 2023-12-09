@@ -17,6 +17,8 @@ import {BlogService} from "./blog.service";
 import {BlogRepository} from "./blog.repository";
 import {getQueryPagination} from "../utils/pagination";
 import {BlogsQueryType, CreateBlogType, UpdateBlogType} from "../models/blogs-models";
+import {createPostType} from "../models/posts-models";
+import {PostService} from "../posts/post.service";
 
 
 
@@ -27,6 +29,7 @@ import {BlogsQueryType, CreateBlogType, UpdateBlogType} from "../models/blogs-mo
 export class BlogController {
     constructor(private readonly blogQueryRepository: BlogQueryRepository,
                 private readonly blogService: BlogService,
+                private readonly postService: PostService,
                 private readonly blogRepository: BlogRepository,) {
     }
 
@@ -51,8 +54,8 @@ export class BlogController {
     @HttpCode(201)
 
     async createBlog(@Body() blogDto: CreateBlogType) {
-        const newPosts = await this.blogService.createBlog(blogDto)
-        return newPosts
+        const newBlog = await this.blogService.createBlog(blogDto)
+        return newBlog
     }
 
     @Put(':id')
@@ -76,27 +79,28 @@ export class BlogController {
         } else throw new NotFoundException('Blog with this id not found')
     }
 
-    // @Get(':id/posts')
+    @Get(':id/posts')
 
-    // async getPostByBlogId(@Param('id') blogId: string,
-    //                       @Request() req: Request,
-    //                       @Query() queryDto: BlogsQueryType
-    //                       // @UserId() userId: string
-    // ) {
-    //     const userId = null
-    //     const pagination = getQueryPagination(queryDto)
-    //     const blog = await this.blogRepository.readBlogsId(blogId)
-    //     if (!blog)  throw new NotFoundException('Blog with this id not found')
-    //     const arr = await this.blogQueryRepository.readPostsByBlogId(blogId, pagination, userId); //servis
-    //    return arr
-    // }
-    //
-    // @Post(':id/posts')
-    // async createPostByBlogId(@Param('id') blogId: string) {
-    //     const post = await this.postService.createPost({...req.body, blogId})
-    //     if (!post)  throw new NotFoundException('Blog with this id not found')
-    //     return res.status(201).send(post)
-    // }
+    async getPostByBlogId(@Param('id') blogId: string,
+                          @Request() req: Request,
+                          @Query() queryDto: BlogsQueryType
+                          // @UserId() userId: string
+    ) {
+        const userId = null
+        const pagination = getQueryPagination(queryDto)
+        const blog = await this.blogRepository.readBlogsId(blogId)
+        if (!blog)  throw new NotFoundException('Blog with this id not found')
+        const arr = await this.blogQueryRepository.readPostsByBlogId(blogId, pagination, userId); //servis
+       return arr
+    }
+
+    @Post(':id/posts')
+    @HttpCode(201)
+    async createPostByBlogId(@Param('id') blogId: string,@Body() postDto: createPostType) {
+        const post = await this.postService.createPost({...postDto, blogId})
+        if (!post)  throw new NotFoundException('Blog with this id not found')
+        return post
+    }
 
 }
 

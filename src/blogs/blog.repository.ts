@@ -1,9 +1,9 @@
 import {ObjectId} from "mongodb";
 import mongoose, {FilterQuery, Model, UpdateQuery} from "mongoose";
 import {Injectable} from "@nestjs/common";
-import {Blog, BlogsOutputType, UpdateBlogType} from "../models/blogs-models";
+import {Blog, BlogsViewType, UpdateBlogType} from "../models/blogs-models";
 import {InjectModel} from "@nestjs/mongoose";
-import {BlogDocument} from "./blog.model";
+import {BlogDocument} from "./blog.entity";
 
 
 //todo also update blogName in posts
@@ -18,7 +18,7 @@ export class BlogRepository {
 
     }
 
-    async createBlog(newBlog: Blog): Promise<BlogsOutputType> {
+    async createBlog(newBlog: Blog): Promise<BlogsViewType> {
 
 
         const _blog = new this.BlogModel(newBlog)

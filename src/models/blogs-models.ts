@@ -1,3 +1,5 @@
+import {ArrayMinSize, IsString, MaxLength} from "class-validator";
+
 export class Blog {
     constructor(
         public name: string,
@@ -10,26 +12,8 @@ export class Blog {
 }
 
 
-export type BlogsType =
-    {
 
-        "name": string,
-        "description": string,
-        "websiteUrl": string,
-        "createdAt": string,
-        "isMembership": boolean
-    }
-// export type BlogsOutputType =
-//     {
-//         "id": string,
-//         "name": string,
-//         "description": string,
-//         "websiteUrl": string,
-//         "createdAt": string,
-//         "isMembership": boolean
-//     }
-
-export class BlogsOutputType {
+export class BlogsViewType {
     constructor(
         public id: string,
         public name: string,
@@ -57,6 +41,19 @@ export type CreateBlogType =
         "description": string,
         "websiteUrl": string
     }
+
+    export class CreateBlogDto
+    {
+        @IsString()
+        @MaxLength(100)
+        name: string
+        @IsString()
+        description: string
+        @IsString()
+        @ArrayMinSize(1)
+        websiteUrl: string
+    }
+
 
 export class UpdateBlogType
     {
