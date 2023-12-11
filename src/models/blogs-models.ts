@@ -1,7 +1,9 @@
 import {ArrayMinSize, IsString, MaxLength} from "class-validator";
+import {ObjectId} from "mongodb";
 
 export class Blog {
     constructor(
+        public _id: ObjectId,
         public name: string,
         public description: string,
         public websiteUrl: string,

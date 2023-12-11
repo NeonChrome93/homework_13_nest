@@ -2,7 +2,7 @@
 
 
 import {Injectable} from "@nestjs/common";
-import {createPostType, PostType, UpdatePostType} from "../models/posts-models";
+import {createPostType, PostType, PostViewType, UpdatePostType} from "../models/posts-models";
 import {PostRepository} from "./post.repository";
 import {BlogRepository} from "../blogs/blog.repository";
 import {REACTIONS_ENUM} from "../models/comments-models";
@@ -22,16 +22,16 @@ export class PostService {
     //     return postRepository.readPostId(postId)
     // }
 
-    async createPost(input: createPostType) {
-        const blog = await this.blogRepository.readBlogsId(input.blogId)
+    async createPost(inputDto: createPostType) : Promise<PostViewType | null> {
+        const blog = await this.blogRepository.readBlogsId(inputDto.blogId)
         if (!blog) return null
         const newPost: PostType = {
-            ...input,
+            ...inputDto,
             blogName: blog.name,
             createdAt: new Date().toISOString(),
-            reactions: []
+            //reactions: []
         }
-        return this.postRepository.createPost(newPost)
+        return  this.postRepository.createPost(newPost)
         //const post = await this.postRepository.createPost(newPost)
         // const likesInfto = {
         //     postId : post._id,

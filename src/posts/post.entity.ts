@@ -35,7 +35,7 @@ export class Post {
     @Prop({default: new Date})
     createdAt: Date
     @Prop()
-    reactions: StatusType[]
+     reactions: StatusType[]
 
 }
 

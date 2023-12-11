@@ -35,7 +35,7 @@ constructor(@InjectModel(Blog.name) private BlogModel: Model<BlogDocument>,
             .exec()
 
         const totalCount = await this.BlogModel.countDocuments(filter).exec()
-        const items: BlogsViewType[] = blogs.map((b ) => ({
+        const items: BlogsViewType[] = blogs.map((b) => ({
             id: b._id.toString(),
             name: b.name,
             description: b.description,

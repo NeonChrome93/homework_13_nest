@@ -47,33 +47,33 @@ export class PostController {
 
     @Post()
     @HttpCode(201)
-    async createPosts(@Body() postDto :  createPostType) {
-        const newPosts = await this.postService.createPost(postDto);
-        if (!newPosts) throw new BadRequestException('Bad Request')
-        else return newPosts
-    }
-    // @Put()
-    // @HttpCode(201)
-    // async updateLikeStatus(@Param('id') postId: string, ??@Body() postDto : PostType ) {
-    //     const user = null
-    //     const post = await this.postRepository.readPostId(postId)
-    //     if(!post) throw new NotFoundException('Post with this id not found')
-    //     const status = req.body.likeStatus
-    //     let addLikes = await postService.addLikesByPost(postId, user._id.toString(), status)
-    //     if(!addLikes) {
-    //         return res.sendStatus(404)
-    //     }
-    //     return res.sendStatus(204)
-    // }
 
-    @Put()
+    async createPosts(@Body() postDto :  createPostType) {
+        const newPost = await this.postService.createPost(postDto);
+        return newPost
+        // @Put()
+        // @HttpCode(201)
+        // async updateLikeStatus(@Param('id') postId: string, ??@Body() postDto : PostType ) {
+        //     const user = null
+        //     const post = await this.postRepository.readPostId(postId)
+        //     if(!post) throw new NotFoundException('Post with this id not found')
+        //     const status = req.body.likeStatus
+        //     let addLikes = await postService.addLikesByPost(postId, user._id.toString(), status)
+        //     if(!addLikes) {
+        //         return res.sendStatus(404)
+        //     }
+        //     return res.sendStatus(204)
+        // }
+    }
+    @Put(':id')
     @HttpCode(204)
-    async updatePost(@Param('id') postId: string,@Body() postDto:  UpdatePostType) {
+    async updatePost(@Param('id') postId: string,
+                     @Body() postDto:  UpdatePostType) {
 
         let postUpdate = await this.postService.updatePosts(postId,postDto );
         if (postUpdate) {
             return postUpdate
-        } else throw new NotFoundException('Blog with this id not found')
+        } else throw new NotFoundException('Post with this id not found')
     }
 
     @Delete(':id')

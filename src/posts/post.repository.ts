@@ -2,7 +2,7 @@
 
 import {Filter, ObjectId} from "mongodb";
 
-import {FilterQuery, Model} from "mongoose";
+import mongoose, {FilterQuery, Model} from "mongoose";
 import {Post, postDbType, PostDocument} from "./post.entity";
 import {PostType, PostViewType, UpdatePostType} from "../models/posts-models";
 import {REACTIONS_ENUM} from "../models/comments-models";
@@ -24,10 +24,12 @@ constructor(@InjectModel(Post.name) private PostModel: Model<PostDocument>) {
 
     async createPost(newPost: PostType): Promise<PostViewType> {
 
-        const res = new this.PostModel(newPost)
-        await res.save()
+        const _post = new this.PostModel(newPost)
+        console.log(_post)
+        _post._id = new mongoose.Types.ObjectId()
+        await _post.save()
         return {
-            id: res._id.toString(),
+            id: _post._id.toString(),
             ...newPost,
             extendedLikesInfo: {
                 likesCount: 0,
@@ -35,7 +37,7 @@ constructor(@InjectModel(Post.name) private PostModel: Model<PostDocument>) {
                 myStatus: REACTIONS_ENUM.None,
                 newestLikes: []
             }
-        }
+       }
     }
 
     async updatePosts(postId: string, newUpdateRequest: UpdatePostType): Promise<boolean> {

@@ -1,7 +1,9 @@
 
 import {BlogRepository} from "./blog.repository";
 import {Injectable} from "@nestjs/common";
-import {Blog, BlogsViewType, CreateBlogType, UpdateBlogType} from "../models/blogs-models";
+import {Blog, BlogsViewType, CreateBlogDto, CreateBlogType, UpdateBlogType} from "../models/blogs-models";
+import {BlogDbType} from "./blog.entity";
+import mongoose from "mongoose";
 
 // query - get
 // commands - post | put | delete
@@ -17,15 +19,23 @@ export class BlogService {
     async createBlog(newBlogFromRequest: CreateBlogType): Promise<BlogsViewType> {
         const dateNow = new Date()
 
-        const newBlog: Blog =  new Blog(
-            newBlogFromRequest.name,
-            newBlogFromRequest.description,
-            newBlogFromRequest.websiteUrl,
-            dateNow.toISOString(),
-            false)
 
-        return this.blogRepository.createBlog(newBlog)
+        const newBlog: BlogDbType = {
+            _id: new mongoose.Types.ObjectId(),
+            name: newBlogFromRequest.name,
+            description: newBlogFromRequest.description,
+            websiteUrl: newBlogFromRequest.websiteUrl,
+            createdAt: dateNow,
+            isMembership: false
+        }
+
+       return  this.blogRepository.createBlog(newBlog)
+
+
+
     }
+
+
 
 
     async updateBlogs(id: string, newUpdateRequest: UpdateBlogType): Promise<boolean> {
