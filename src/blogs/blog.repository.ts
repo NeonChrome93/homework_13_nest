@@ -1,9 +1,13 @@
 import {ObjectId} from "mongodb";
 import mongoose, {FilterQuery, Model, UpdateQuery} from "mongoose";
 import {Injectable} from "@nestjs/common";
-import {Blog, BlogsViewType, UpdateBlogType} from "../models/blogs-models";
+import { BlogsViewType, UpdateBlogType} from "../models/blogs-models";
 import {InjectModel} from "@nestjs/mongoose";
-import {BlogDocument} from "./blog.entity";
+import {Blog, BlogDbType, BlogDocument} from "./blog.entity";
+import {blogMapper} from "../utils/mappers/blogs-mapper";
+import {PostViewType} from "../models/posts-models";
+import {postDbType} from "../posts/post.entity";
+import {likesMapper} from "../utils/mappers/likes-mapper";
 
 
 //todo also update blogName in posts
@@ -18,18 +22,21 @@ export class BlogRepository {
 
     }
 
-    async createBlog(newBlog: Blog): Promise<BlogsViewType> {
+    async createBlog(newBlog: BlogDbType): Promise<BlogsViewType> {
 
 
         const _blog = new this.BlogModel(newBlog)
-        console.log(_blog)
-        _blog._id = new mongoose.Types.ObjectId()
+        // console.log(_blog)
+        // _blog._id = new mongoose.Types.ObjectId()
         await _blog.save();
 
-        return {
-            id: _blog._id.toString(),
-            ...newBlog
-        }
+        const items: BlogsViewType = blogMapper(_blog)
+
+        return { ...items}
+        //  return {
+        //     id: _blog._id.toString(),
+        //     ...newBlog
+        // }
 
     }
 
