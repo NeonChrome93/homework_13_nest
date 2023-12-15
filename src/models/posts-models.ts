@@ -1,5 +1,7 @@
 import {WithId} from "mongodb";
 import {REACTIONS_ENUM} from "./comments-models";
+import {IsNotEmpty, IsString, MaxLength} from "class-validator";
+import {Trim} from "./custom";
 
 
 export type PostType = {
@@ -41,17 +43,50 @@ export class PostViewType {
 export type mongoTypePost = WithId<PostType>
 
 export type createPostType = {
+
+    @MaxLength(30)
+    @Trim()
+    @IsString()
+    @IsNotEmpty()
     "title": string,
+
+    @MaxLength(100)
+    @Trim()
+    @IsString()
+    @IsNotEmpty()
     "shortDescription": string,
+
+    @MaxLength(1000)
+    @Trim()
+    @IsString()
+    @IsNotEmpty()
     "content": string,
+    @Trim()
+    @IsString()
+    @IsNotEmpty()
     "blogId": string
 }
 
 
 export type UpdatePostType = {
+    @MaxLength(30)
+    @Trim()
+    @IsString()
+    @IsNotEmpty()
     "title": string,
+    @MaxLength(100)
+    @Trim()
+    @IsString()
+    @IsNotEmpty()
     "shortDescription": string,
+    @MaxLength(1000)
+    @Trim()
+    @IsString()
+    @IsNotEmpty()
     "content": string,
+    @Trim()
+    @IsString()
+    @IsNotEmpty()
     "blogId": string,
 }
 
