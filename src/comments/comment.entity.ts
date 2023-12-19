@@ -15,27 +15,17 @@ export type CommentsDBType = {
     reactions: StatusType[]
 }
 
-export type CommentDocument = HydratedDocument<Comments>;
-
-@Schema(({collection: 'comments'}))
-
-export class Comments  {
-    @Prop( {required: true})
-    postId: string
-    @Prop( {required: true})
-    content: string
-    @Prop( {required: true})
-    commentatorInfo: {
-        userId: string
-        userLogin: string
-    }
-    @Prop( {type: Date, default: Date.now})
-    createdAt: Date
-    @Prop( { default: []})
-    reactions:  [Status]
-
+export type StatusType = {
+    userId: string,
+    createdAt: Date,
+    status: REACTIONS_ENUM
 }
 
+export type CommentDocument = HydratedDocument<Comments>;
+
+
+
+@Schema()
 class Status {
     @Prop( {required: true})
     userId: string
@@ -45,10 +35,37 @@ class Status {
     status: string
 }
 
-export type StatusType = {
-    userId: string,
-    createdAt: Date,
-    status: REACTIONS_ENUM
+const statusSchema = SchemaFactory.createForClass(Status);
+
+@Schema()
+class CommentInfo {
+    @Prop( {required: true})
+    userId: string
+    @Prop( {required: true})
+    userLogin: string
+}
+const commentInfoSchema = SchemaFactory.createForClass(CommentInfo);
+
+@Schema(({collection: 'comments'}))
+
+export class Comments  {
+    _id: ObjectId
+    @Prop( {required: true})
+    postId: string
+    @Prop( {required: true})
+    content: string
+    @Prop( {type: commentInfoSchema,required: true})
+    commentatorInfo: {CommentInfo }
+    @Prop( {type: Date, default: Date.now})
+    createdAt: Date
+    @Prop( { type: statusSchema, default: []})
+    reactions:  Status[]
+
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comments)
+
+
+
+//посмотреть документацию содания схемы в несте смотреть как делать вложенные документы
+
