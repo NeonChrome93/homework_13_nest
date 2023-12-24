@@ -1,5 +1,5 @@
 import {InjectModel} from "@nestjs/mongoose";
-import {User, UserDbModel, UserDocument} from "./user.entity";
+import {User, UserDocument} from "./user.entity";
 import {Model} from "mongoose";
 import {Injectable} from "@nestjs/common";
 import {ObjectId} from "mongodb";
@@ -9,31 +9,31 @@ export class UsersRepository {
 constructor(@InjectModel(User.name) private UserModel: Model<UserDocument>) {
 }
 
-    async readUserById(id: string): Promise<UserDbModel | null> {
-        const user: UserDbModel | null = await this.UserModel.findOne({_id: new ObjectId(id)});
+    async readUserById(id: string): Promise<User | null> {
+        const user: User | null = await this.UserModel.findOne({_id: new ObjectId(id)});
         if (!user) {
             return null;
         }
         return user
     }
 
-    // async findByLoginOrEmail(loginOrEmail: string): Promise<UserDbModel | null> {
-    //     return this.UserModel.findOne({$or: [{email: loginOrEmail}, {login: loginOrEmail}]})
-    // }
+    async findByLoginOrEmail(loginOrEmail: string): Promise<User | null> {
+        return this.UserModel.findOne({$or: [{email: loginOrEmail}, {login: loginOrEmail}]})
+    }
 
-    async findUserByRecoveryCode(recoveryCode: string): Promise<UserDbModel | null> {
-        const user: UserDbModel | null = await this.UserModel.findOne({passwordRecoveryCode: recoveryCode});
+    async findUserByRecoveryCode(recoveryCode: string): Promise<User | null> {
+        const user: User | null = await this.UserModel.findOne({passwordRecoveryCode: recoveryCode});
         if (!user) {
             return null;
         }
         return user
     }
 
-    async createUser(newUser: UserDbModel) {
+    async createUser(newUser: User) {
         return this.UserModel.create({...newUser})
     }
 
-    async saveUser(newUser: UserDbModel) {
+    async saveUser(newUser: User) {
         const user = new this.UserModel(newUser)
         await user.save()
         return user
@@ -58,39 +58,39 @@ constructor(@InjectModel(User.name) private UserModel: Model<UserDocument>) {
     }
 
 
-    // async readUserByCode(code: string): Promise<UserDbModel | null> {
-    //     const user: UserDbModel | null = await UserModel.findOne({confirmationCode: code});
-    //     if (!user) {
-    //         return null;
-    //     }
-    //     return user
-    // }
-    //
-    // async confirmEmail(id: string): Promise<void> {
-    //     await UserModel.updateOne({_id: new ObjectId(id)}, {$set: {isConfirmed: true}});
-    //     return;
-    // }
-    //
-    //
-    // async readUserByEmail(email: string): Promise<UserDbModel | null> {
-    //     const user: UserDbModel | null = await UserModel.findOne({email: email});
-    //     if (!user) {
-    //         return null;
-    //     }
-    //     return user
-    // }
-    //
-    // async readUserByRecoveryCode(email: string): Promise<UserDbModel | null> {
-    //     const user: UserDbModel | null = await UserModel.findOne({email: email});
-    //     if (!user) {
-    //         return null;
-    //     }
-    //     return user
-    // }
-    //
-    // async updateConfirmationCode(id: string, newCode: string): Promise<any> {
-    //     return UserModel.updateOne({_id: new ObjectId(id)},
-    //         {$set: {confirmationCode: newCode}},);
-    // }
+    async readUserByCode(code: string): Promise<User | null> {
+        const user: User | null = await this.UserModel.findOne({confirmationCode: code});
+        if (!user) {
+            return null;
+        }
+        return user
+    }
+
+    async confirmEmail(id: string): Promise<void> {
+        await this.UserModel.updateOne({_id: new ObjectId(id)}, {$set: {isConfirmed: true}});
+        return;
+    }
+
+
+    async readUserByEmail(email: string): Promise<User | null> {
+        const user: User | null = await this.UserModel.findOne({email: email});
+        if (!user) {
+            return null;
+        }
+        return user
+    }
+
+    async readUserByRecoveryCode(email: string): Promise<User | null> {
+        const user: User | null = await this.UserModel.findOne({email: email});
+        if (!user) {
+            return null;
+        }
+        return user
+    }
+
+    async updateConfirmationCode(id: string, newCode: string): Promise<any> {
+        return this.UserModel.updateOne({_id: new ObjectId(id)},
+            {$set: {confirmationCode: newCode}},);
+    }
 
 }

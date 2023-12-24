@@ -1,27 +1,15 @@
 import {CanActivate, createParamDecorator, ExecutionContext, Injectable, UnauthorizedException} from "@nestjs/common";
 import {UserService} from "../users/user.service";
 import * as jwt from 'jsonwebtoken';
+import {JwtServices} from "../common/adapters/jwt.service";
 
 
-export const UserAll = createParamDecorator(
-    (data: unknown, context: ExecutionContext) => {
-        const request = context.switchToHttp().getRequest();
-        return request.user;
-    },
-);
 
 
-export const UserId = createParamDecorator(
-    (data: unknown, context: ExecutionContext) => {
-        const request = context.switchToHttp().getRequest();
-        return request.user.userId;
-    },
-);
-
-
+@Injectable()
 export class  authMiddleware implements CanActivate {
   constructor(private readonly userService: UserService,
-              private readonly jwtService: JwtService ) {
+              private readonly jwtService: JwtServices ) {
   }
 
   async  canActivate(
@@ -34,11 +22,11 @@ export class  authMiddleware implements CanActivate {
 
         const token = request.headers.authorization.split(' ')[1];
         const userId = this.jwtService.getUserIdByToken(token)
-        //console.log(token)
+        console.log(token)
 
         if (userId) {
             const user = await this.userService.findUserById(userId.toString()).then(user => {
-                request.user = {userId: user ? user._id.toString() : null};
+                request.user =  user ? user : null;
             })
             return true
         }
@@ -48,19 +36,31 @@ export class  authMiddleware implements CanActivate {
 }
 
 @Injectable()
-export class JwtService {
-    private readonly secretKey = 'your-secret-key'; // Замените "your-secret-key" на ваш секретный ключ
-
-    generateToken(payload: any): string {
-        return jwt.sign(payload, this.secretKey);
+export class  softAuthMiddleware implements CanActivate {
+    constructor(private readonly userService: UserService,
+                private readonly jwtService: JwtServices ) {
     }
 
-    verifyToken(token: string): any {
-        return jwt.verify(token, this.secretKey);
+    async  canActivate(
+        context: ExecutionContext,
+    ): Promise<boolean>  {
+        const request = context.switchToHttp().getRequest();
+        if (!request.headers.authorization) {
+            request.user = null
+        }
+
+        const token = request.headers.authorization.split(' ')[1];
+        const userId = this.jwtService.getUserIdByToken(token)
+        console.log(token)
+
+        if (userId) {
+            const user = await this.userService.findUserById(userId.toString()).then(user => {
+                request.user =  user ? user : null;
+            })
+            return true
+        }
+       else request.user = null
+        return true
     }
 
-    getUserIdByToken(token: string): string {
-        const payload: any = this.verifyToken(token);
-        return payload.userId;
-    }
 }

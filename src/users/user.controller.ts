@@ -1,8 +1,21 @@
-import {Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Post, Query, Res} from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpCode,
+    NotFoundException,
+    Param,
+    Post,
+    Query,
+    Res,
+    UseGuards
+} from "@nestjs/common";
 import {UserCreateModel, UsersQueryType} from "../models/users-models";
 import {getQueryUserPagination} from "../utils/pagination";
 import {UsersQueryRepository} from "./user.query.repository";
 import {UserService} from "./user.service";
+import {AuthGuard} from "../guards/auth-guard";
 
 
 @Controller('users')
@@ -12,6 +25,7 @@ export class UserController {
     }
 
     @Get()
+    @UseGuards(AuthGuard)
     async getUsers (@Query() queryDto: UsersQueryType) {
     const pagination = getQueryUserPagination(queryDto)
     const arr = await this.usersQueryRepository.getUsers(pagination);
@@ -22,6 +36,7 @@ export class UserController {
 
     @Post()
     @HttpCode(201)
+    @UseGuards(AuthGuard)
     async CreateUser (@Body() userDto: UserCreateModel) {
 
         const newUser = await this.userService.createUser(userDto);
@@ -30,6 +45,7 @@ export class UserController {
 
     @Delete(':id')
     @HttpCode(204)
+    @UseGuards(AuthGuard)
     async deleteUser(@Param('id') userId: string)  {
         const isDeleted = await this.userService.deleteUser(userId);
         if(isDeleted) {
