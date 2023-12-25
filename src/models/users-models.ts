@@ -1,17 +1,28 @@
 import {ObjectId} from "mongoose";
+import {IsUserAlreadyExist} from "../common/decorators/user-exist.decorator";
+import {isEmail, IsEmail, IsNotEmpty, IsString, IsUrl, MaxLength, MinLength} from "class-validator";
+import {Trim} from "./custom";
 
-export type UserCreateModel = {
+export class UserCreateModel  {
+    @IsUserAlreadyExist({
+        message: 'User already exists. Choose another name.'})
+    @MaxLength(10)
+    @MinLength(3)
+    @Trim()
+    @IsString()
+    @IsNotEmpty()
     login: string
+    @IsUserAlreadyExist()
+    @IsEmail()
+    @IsString()
+    @IsNotEmpty()
     email: string
+    @MaxLength(20)
+    @MinLength(6)
+    @Trim()
+    @IsString()
+    @IsNotEmpty()
     password: string
-}
-
-export class User  {
-  constructor(
-   public login: string,
-   public email: string,
-   public createdAt: string) {
-  }
 }
 
 
@@ -29,4 +40,35 @@ export type UsersQueryType = {
     sortBy: string,
     sortDirection: string,
     searchNameTerm: string | null
+}
+
+export type UserEmailCreateDto = {
+    login: string
+    email: string
+    password: string
+}
+
+export class codeDto  {
+    @IsString()
+    @IsNotEmpty()
+    code: string
+}
+
+export class emailDto  {
+    @IsEmail( )
+    @IsString()
+    @IsNotEmpty()
+    email: string
+}
+
+export class newPasswordDto {
+    @MaxLength(20)
+    @MinLength(6)
+    @Trim()
+    @IsString()
+    @IsNotEmpty()
+    newPassword: string
+    @IsString()
+    @IsNotEmpty()
+    recoveryCode: string
 }
