@@ -4,21 +4,21 @@ import {
     Delete,
     Get,
     HttpCode,
-    HttpStatus,
     NotFoundException,
     Param,
     Post,
     Put,
     Query,
-    Request
+    Request, UseGuards
 } from "@nestjs/common";
 import {BlogQueryRepository} from "./blog.query.repository";
 import {BlogService} from "./blog.service";
 import {BlogRepository} from "./blog.repository";
 import {getQueryPagination} from "../utils/pagination";
-import {BlogsQueryType, CreateBlogType, UpdateBlogType} from "../models/blogs-models";
+import {BlogsQueryType, CreateBlogDto, UpdateBlogType} from "../models/blogs-models";
 import {createPostType} from "../models/posts-models";
 import {PostService} from "../posts/post.service";
+import {AuthGuard} from "../guards/auth-guard";
 
 
 
@@ -52,8 +52,8 @@ export class BlogController {
 
     @Post()
     @HttpCode(201)
-
-    async createBlog(@Body() blogDto: CreateBlogType) {
+    @UseGuards(AuthGuard)
+    async createBlog(@Body() blogDto: CreateBlogDto) {
         const newBlog = await this.blogService.createBlog(blogDto)
         return newBlog
     }
@@ -69,15 +69,7 @@ export class BlogController {
 
     }
 
-    @Delete(':id')
-    @HttpCode(204)
-    async deleteBlog(@Param('id') id: string) {
 
-        const isDeleted = await this.blogService.deleteBlogs(id)
-        if (isDeleted) {
-            return isDeleted
-        } else throw new NotFoundException('Blog with this id not found')
-    }
 
     @Get(':id/posts')
 
@@ -100,6 +92,16 @@ export class BlogController {
         const post = await this.postService.createPost({...postDto, blogId})
         if (!post)  throw new NotFoundException('Blog with this id not found')
         return post
+    }
+
+    @Delete(':id')
+    @HttpCode(204)
+    async deleteBlog(@Param('id') id: string) {
+
+        const isDeleted = await this.blogService.deleteBlogs(id)
+        if (isDeleted) {
+            return isDeleted
+        } else throw new NotFoundException('Blog with this id not found')
     }
 
 }

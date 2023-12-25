@@ -125,7 +125,7 @@ export class AuthService  {
         const deviceId = randomUUID()
         const refreshToken = this.jwtService.generateRefreshToken(user, deviceId);
         const lastActiveDate = this.jwtService.lastActiveDate(refreshToken)// взять дату выписки этого токена === lastActiveDate у девайся
-        await this.deviceService.createDevice(ip, deviceId, user._id.toString(), title, new Date(lastActiveDate))
+        //await this.deviceService.createDevice(ip, deviceId, user._id.toString(), title, new Date(lastActiveDate))
         return {
             accessToken,
             refreshToken
@@ -137,7 +137,7 @@ export class AuthService  {
         const accessToken = this.jwtService.createJWT(user);
         const newRefreshToken = this.jwtService.generateRefreshToken(user, payload.deviceId);
         const lastActiveDate = this.jwtService.lastActiveDate(newRefreshToken);
-        await this.deviceRepository.updateDeviceLastActiveDate(payload.deviceId, lastActiveDate)
+       // await this.deviceRepository.updateDeviceLastActiveDate(payload.deviceId, lastActiveDate)
         return {
             accessToken,
             newRefreshToken

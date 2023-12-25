@@ -1,5 +1,5 @@
 import jwt, {JwtPayload} from 'jsonwebtoken'
-import {UserDbModel} from "../../users/user.entity";
+import {User} from "../../users/user.entity";
 import {Injectable} from "@nestjs/common";
 import {JwtService} from "@nestjs/jwt";
 
@@ -10,9 +10,9 @@ export class JwtServices {
 
 
 
-    createJWT(user: UserDbModel) {
+    createJWT(user: User) {
         //TODO: 10s
-        const token = jwt.sign({userId: user._id}, '123', {expiresIn: '10m'})
+        const token = jwt.sign({userId: user._id}, '123', {expiresIn: '30m'})
         return token
     }
 
@@ -27,9 +27,9 @@ export class JwtServices {
     }
 
     //jwt.decode - можно достать дату выдачи и сохранить в БД + добавить переменную девайс ID
-    generateRefreshToken(user: UserDbModel, deviceId: string) { //deviceId
+    generateRefreshToken(user: User, deviceId: string) { //deviceId
         return jwt.sign({userId: user._id, deviceId: deviceId}, '123', {
-            expiresIn: '20s',
+            expiresIn: '1h',
         });
 
     }

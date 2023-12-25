@@ -1,8 +1,10 @@
-export type CreateCommentType = {
+
+
+export class CreateCommentDto  {
     content: string
 }
 
-export type UpdateCommentType = {
+export class UpdateCommentType  {
     content: string
 }
 
@@ -12,17 +14,24 @@ export enum REACTIONS_ENUM {
     None = "None"
 }
 
-export type CommentsViewType = {
-    id: string,
-    content: string,
-    commentatorInfo: {
-        userId: string,
-        userLogin: string
+export class updateLikeDto{
+    status: REACTIONS_ENUM
+
+}
+
+export class CommentsViewType {
+    constructor(
+        public id: string,
+    public content: string,
+    public commentatorInfo: {
+         userId: string,
+         userLogin: string
     },
-    createdAt: string,
-    likesInfo: {
+    public createdAt: string,
+    public likesInfo: {
         likesCount: number,
         dislikesCount: number,
         myStatus: REACTIONS_ENUM
-    }
+
+    }) {}
 }

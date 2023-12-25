@@ -1,4 +1,4 @@
-import {ArrayMinSize, IsEmail, isEmail, IsNotEmpty, IsString, MaxLength} from "class-validator";
+import { IsNotEmpty, IsString, IsUrl, MaxLength} from "class-validator";
 import {ObjectId} from "mongodb";
 import {Trim} from "./custom";
 
@@ -39,7 +39,7 @@ export type BlogsQueryType = {
     searchNameTerm: string | null
 }
 
-export class CreateBlogType
+export class CreateBlogDto
     {
 
         @MaxLength(15)
@@ -53,23 +53,23 @@ export class CreateBlogType
         @IsString()
         @IsNotEmpty()
         "description": string
-        @IsEmail()
+        @IsUrl()
         @IsString()
         @IsNotEmpty()
         "websiteUrl": string
     }
 
-    export class CreateBlogDto
-    {
-        @IsString()
-        @MaxLength(100)
-        name: string
-        @IsString()
-        description: string
-        @IsString()
-        @ArrayMinSize(1)
-        websiteUrl: string
-    }
+    // export class CreateBlogDto
+    // {
+    //     @IsString()
+    //     @MaxLength(100)
+    //     name: string
+    //     @IsString()
+    //     description: string
+    //     @IsString()
+    //     @ArrayMinSize(1)
+    //     websiteUrl: string
+    // }
 
 
 export class UpdateBlogType
@@ -85,7 +85,7 @@ export class UpdateBlogType
         @IsString()
         @IsNotEmpty()
         "description": string
-        @IsEmail()
+        @IsUrl()
         @Trim()
         @IsString()
         @IsNotEmpty()

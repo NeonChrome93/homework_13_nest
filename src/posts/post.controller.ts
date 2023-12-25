@@ -1,5 +1,4 @@
 import {
-    BadRequestException,
     Body,
     Controller, Delete,
     Get,
@@ -7,7 +6,7 @@ import {
     NotFoundException,
     Param,
     Post, Put,
-    Query
+    Query, UseGuards
 } from "@nestjs/common";
 import {BlogsQueryType} from "../models/blogs-models";
 import {createPostType, PostsQueryType, PostType, UpdatePostType} from "../models/posts-models";
@@ -19,13 +18,21 @@ import {BlogService} from "../blogs/blog.service";
 import {BlogRepository} from "../blogs/blog.repository";
 import {PostService} from "./post.service";
 import {PostRepository} from "./post.repository";
+import {authMiddleware} from "../guards/user-guard";
+import {CommentsQueryRepository} from "../comments/comment.query.repository";
+import {updateLikeDto} from "../models/comments-models";
+import {User} from "../users/user.entity";
+import {CommentService} from "../comments/comment.service";
+import {UserAll, UserId} from "../common/decorators/get-user.decorator";
 
 
 @Controller('posts')
 export class PostController {
     constructor(private readonly postsQueryRepository: PostsQueryRepository,
                 private readonly postService: PostService,
-                private readonly postRepository: PostRepository, ) {
+                private readonly commentService: CommentService,
+                private readonly postRepository: PostRepository,
+                private readonly commentQueryRepository: CommentsQueryRepository) {
     }
 
     @Get()
@@ -86,29 +93,30 @@ export class PostController {
         } else throw new NotFoundException('Blog with this id not found');
     }
 
-    // @Get(':postId/comments')
-    // async getCommentByPostId(@Query() queryDto: PostsQueryType, @Param('id') postId: string) {
-    //     //const userId = req.userId
-    //     const pagination = getQueryPagination(queryDto);
-    //     const post = await postRepository.readPostId(postId);
-    //     if (!post) {
-    //         return res.sendStatus(404);
-    //     }
-    //     const comment = await commentsQueryRepository.readCommentByPostId(postId, pagination, userId);
-    //     if (!comment) return res.sendStatus(404);
-    //     return res.status(200).send(comment);
-    // }
-    //
-    // @Post(':postId/comments')
-    // async createCommentByPostId(@Param('id') postId: string) {
-    //     const post = await postRepository.readPostId(postId);
-    //     if (!post) return res.sendStatus(404);
-    //
-    //     const userId = req.user!._id.toString();
-    //     const userLogin = req.user!.login;
-    //     const newComment = await commentService.createComment(post._id.toString(), userId, userLogin, req.body.content);
-    //     return res.status(201).send(newComment);
-    // }
+    @Get(':postId/comments')
+    @UseGuards(authMiddleware)
+    async getCommentByPostId(@Query() queryDto: PostsQueryType, @Param('id') postId: string, @UserId() userId: string | null) {
+        //const userId = req.userId
+        const pagination = getQueryPagination(queryDto);
+        const post = await this.postRepository.readPostId(postId);
+        if (!post) {
+            throw new NotFoundException();
+        }
+        const comment = await this.commentQueryRepository.readCommentByPostId(postId, pagination, userId);
+        if (!comment) throw new NotFoundException();
+        else return comment;
+    }
+
+    @Post(':postId/comments')
+    async createCommentByPostId(@Param('id') postId: string,@Body() dto: updateLikeDto,@UserAll() user: User) {
+        const post = await this.postRepository.readPostId(postId);
+        if (!post) throw new NotFoundException();
+
+        const userId = user!._id.toString();
+        const userLogin =user!.login;
+        const newComment = await this.commentService.createComment(post._id.toString(), userId, userLogin, dto.status);
+        return newComment;
+    }
 
 }
 

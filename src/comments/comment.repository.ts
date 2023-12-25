@@ -1,19 +1,19 @@
-import {CommentDocument, CommentsDBType} from "./comment.entity";
+import {CommentDocument, Comments, CommentsDBType} from "./comment.entity";
 
 import {InjectModel} from "@nestjs/mongoose";
-import {Model, Schema, Types} from "mongoose";
+import {Model } from "mongoose";
 import {UpdateCommentType} from "../models/comments-models";
 import {ObjectId} from "mongodb";
 import {Injectable} from "@nestjs/common";
 
 @Injectable()
 export class CommentRepository  {
-constructor(@InjectModel(Comment.name) private CommentModel: Model<CommentDocument> ) {
+constructor(@InjectModel(Comments.name) private CommentModel: Model<CommentDocument> ) {
 }
 
-    async readCommentIdDbType(id: string): Promise<CommentsDBType | null> {
+    async readCommentIdDbType(id: string): Promise<Comments | null> {
         if (!ObjectId.isValid(id)) return null
-        return this.CommentModel.findOne({_id: new ObjectId(id)})
+        return this.CommentModel.findOne({_id: new ObjectId(id)}).lean()
     }
 
     async createComment(newComment: CommentsDBType): Promise<boolean> {
@@ -49,7 +49,7 @@ constructor(@InjectModel(Comment.name) private CommentModel: Model<CommentDocume
         return true
     }
 
-    async updateCommentReactions(comment: CommentsDBType) {
+    async updateCommentReactions(comment: Comments) {
         return this.CommentModel.updateOne({_id: comment._id}, {
             $set: {...comment}
         })

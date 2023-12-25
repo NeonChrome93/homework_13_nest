@@ -42,25 +42,25 @@ export class PostViewType {
 
 export type mongoTypePost = WithId<PostType>
 
-export type createPostType = {
+export class createPostType  {
 
     @MaxLength(30)
     @Trim()
     @IsString()
     @IsNotEmpty()
-    "title": string,
+    "title": string
 
     @MaxLength(100)
     @Trim()
     @IsString()
     @IsNotEmpty()
-    "shortDescription": string,
+    "shortDescription": string
 
     @MaxLength(1000)
     @Trim()
     @IsString()
     @IsNotEmpty()
-    "content": string,
+    "content": string
     @Trim()
     @IsString()
     @IsNotEmpty()
@@ -68,26 +68,26 @@ export type createPostType = {
 }
 
 
-export type UpdatePostType = {
+export class UpdatePostType  {
     @MaxLength(30)
     @Trim()
     @IsString()
     @IsNotEmpty()
-    "title": string,
+    "title": string
     @MaxLength(100)
     @Trim()
     @IsString()
     @IsNotEmpty()
-    "shortDescription": string,
+    "shortDescription": string
     @MaxLength(1000)
     @Trim()
     @IsString()
     @IsNotEmpty()
-    "content": string,
+    "content": string
     @Trim()
     @IsString()
     @IsNotEmpty()
-    "blogId": string,
+    "blogId": string
 }
 
 export type PostsQueryType = {

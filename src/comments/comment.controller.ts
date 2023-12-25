@@ -1,14 +1,9 @@
 import {Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Put, Req, UseGuards} from "@nestjs/common";
-import { Request } from 'express';
-import {BlogQueryRepository} from "../blogs/blog.query.repository";
-import {BlogService} from "../blogs/blog.service";
-import {PostService} from "../posts/post.service";
-import {BlogRepository} from "../blogs/blog.repository";
-import {CreateCommentDto, REACTIONS_ENUM} from "../models/comments-models";
-import e from "express";
+import {CreateCommentDto, updateLikeDto} from "../models/comments-models";
 import {CommentsQueryRepository} from "./comment.query.repository";
 import {CommentService} from "./comment.service";
-import {authMiddleware, UserId} from "../guards/user-guard";
+import {authMiddleware} from "../guards/user-guard";
+import {UserId} from "../common/decorators/get-user.decorator";
 
 
 @Controller('comments')
@@ -46,13 +41,13 @@ export class CommentController {
 
     @Put(':commentId/like-status')
     @UseGuards(authMiddleware)
-    async updateLikeStatus(@Param('commentId') commentId: string, @Body() status: REACTIONS_ENUM, @UserId() userId: string) {
+    async updateLikeStatus(@Param('commentId') commentId: string, @Body() dto:  updateLikeDto, @UserId() userId: string) {
 
 
         // console.log(status, "likestatus")
         // console.log(await CommentModel.findOne({_id: new ObjectId(comment)}))
 
-        let addLikes = await this.commentService.addReaction(commentId, userId, status)
+        let addLikes = await this.commentService.addReaction(commentId, userId, dto.status)
 
         // console.log(await CommentModel.findOne({_id: new ObjectId(comment)}))
         if (addLikes) {

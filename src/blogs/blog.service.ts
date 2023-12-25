@@ -1,7 +1,7 @@
 
 import {BlogRepository} from "./blog.repository";
 import {Injectable} from "@nestjs/common";
-import {Blog, BlogsViewType, CreateBlogDto, CreateBlogType, UpdateBlogType} from "../models/blogs-models";
+import {Blog, BlogsViewType, CreateBlogDto, UpdateBlogType} from "../models/blogs-models";
 import {BlogDbType} from "./blog.entity";
 import mongoose from "mongoose";
 
@@ -16,7 +16,7 @@ export class BlogService {
     }
 
 
-    async createBlog(newBlogFromRequest: CreateBlogType): Promise<BlogsViewType> {
+    async createBlog(newBlogFromRequest: CreateBlogDto): Promise<BlogsViewType> {
         const dateNow = new Date()
 
 

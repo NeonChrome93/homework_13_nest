@@ -7,9 +7,8 @@ import {
 } from 'class-validator';
 import {UsersRepository} from "../../users/user.repository";
 import {Injectable} from "@nestjs/common";
-
-@ValidatorConstraint({ async: true })
 @Injectable()
+@ValidatorConstraint({ async: true })
 export class IsUserAlreadyExistConstraint implements ValidatorConstraintInterface {
     constructor(private readonly UserRepository: UsersRepository) {
     }
@@ -24,6 +23,7 @@ export class IsUserAlreadyExistConstraint implements ValidatorConstraintInterfac
 export function IsUserAlreadyExist(validationOptions?: ValidationOptions) {
     return function (object: Object, propertyName: string) {
         registerDecorator({
+            name: 'IsUserAlreadyExist',
             target: object.constructor,
             propertyName: propertyName,
             options: validationOptions,
