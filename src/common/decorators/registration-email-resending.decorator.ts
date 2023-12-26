@@ -10,7 +10,7 @@ import {Injectable} from "@nestjs/common";
 
 @Injectable()
 @ValidatorConstraint({async: true})
-export class RegistrationEmailResending implements ValidatorConstraintInterface {
+export class RegistrationEmailResendingConstraint implements ValidatorConstraintInterface {
     constructor(private readonly userRepository: UsersRepository) {
     }
 
@@ -35,7 +35,7 @@ export function IfUserExistOrConfirmed(validationOptions?: ValidationOptions) {
             propertyName: propertyName,
             options: validationOptions,
             constraints: [],
-            validator: RegistrationEmailResending,
+            validator: RegistrationEmailResendingConstraint,
         });
     };
 }

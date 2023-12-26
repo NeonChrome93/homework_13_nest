@@ -72,7 +72,7 @@ export class CreateBlogDto
     // }
 
 
-export class UpdateBlogType
+export class UpdateBlogTypeDto
     {
 
         @MaxLength(15)

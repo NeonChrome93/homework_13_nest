@@ -3,7 +3,7 @@ import {IsUserAlreadyExist} from "../common/decorators/user-exist.decorator";
 import {isEmail, IsEmail, IsNotEmpty, IsString, IsUrl, MaxLength, MinLength} from "class-validator";
 import {Trim} from "./custom";
 
-export class UserCreateModel  {
+export class UserCreateModelDto {
     @IsUserAlreadyExist({
         message: 'User already exists. Choose another name.'})
     @MaxLength(10)
@@ -42,11 +42,6 @@ export type UsersQueryType = {
     searchNameTerm: string | null
 }
 
-export type UserEmailCreateDto = {
-    login: string
-    email: string
-    password: string
-}
 
 export class codeDto  {
     @IsString()
@@ -61,7 +56,7 @@ export class emailDto  {
     email: string
 }
 
-export class newPasswordDto {
+export class NewPasswordDto {
     @MaxLength(20)
     @MinLength(6)
     @Trim()

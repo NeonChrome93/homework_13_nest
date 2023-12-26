@@ -2,7 +2,7 @@ import {CommentDocument, Comments, CommentsDBType} from "./comment.entity";
 
 import {InjectModel} from "@nestjs/mongoose";
 import {Model } from "mongoose";
-import {UpdateCommentType} from "../models/comments-models";
+import {UpdateCommentDto} from "../models/comments-models";
 import {ObjectId} from "mongodb";
 import {Injectable} from "@nestjs/common";
 
@@ -22,7 +22,7 @@ constructor(@InjectModel(Comments.name) private CommentModel: Model<CommentDocum
         return true
     }
 
-    async updateComment(commentId: string, newUpdateRequest: UpdateCommentType): Promise<boolean> {
+    async updateComment(commentId: string, newUpdateRequest: UpdateCommentDto): Promise<boolean> {
 
         const res = await this.CommentModel.updateOne({_id: new ObjectId(commentId)}, {
                 $set: {content: newUpdateRequest.content}

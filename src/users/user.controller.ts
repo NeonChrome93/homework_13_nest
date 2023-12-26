@@ -11,11 +11,12 @@ import {
     Res,
     UseGuards
 } from "@nestjs/common";
-import {UserCreateModel, UsersQueryType} from "../models/users-models";
+import {UserCreateModelDto, UsersQueryType} from "../models/users-models";
 import {getQueryUserPagination} from "../utils/pagination";
 import {UsersQueryRepository} from "./user.query.repository";
 import {UserService} from "./user.service";
-import {AuthGuard} from "../guards/auth-guard";
+import {AuthGuard} from "../guards/auth.guard";
+
 
 
 @Controller('users')
@@ -37,7 +38,7 @@ export class UserController {
     @Post()
     @HttpCode(201)
     @UseGuards(AuthGuard)
-    async CreateUser (@Body() userDto: UserCreateModel) {
+    async CreateUser (@Body() userDto: UserCreateModelDto) {
 
         const newUser = await this.userService.createUser(userDto);
         return newUser

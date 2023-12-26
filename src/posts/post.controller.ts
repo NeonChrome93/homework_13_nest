@@ -9,7 +9,7 @@ import {
     Query, UseGuards
 } from "@nestjs/common";
 import {BlogsQueryType} from "../models/blogs-models";
-import {createPostType, PostsQueryType, PostType, UpdatePostType} from "../models/posts-models";
+import {createPostDto, PostsQueryType, PostType, UpdatePostDto} from "../models/posts-models";
 import {query} from "express";
 import {getQueryPagination} from "../utils/pagination";
 import {PostsQueryRepository} from "./post.query.repository";
@@ -55,7 +55,7 @@ export class PostController {
     @Post()
     @HttpCode(201)
 
-    async createPosts(@Body() postDto :  createPostType) {
+    async createPosts(@Body() postDto :  createPostDto) {
         const newPost = await this.postService.createPost(postDto);
         return newPost
         // @Put()
@@ -75,7 +75,7 @@ export class PostController {
     @Put(':id')
     @HttpCode(204)
     async updatePost(@Param('id') postId: string,
-                     @Body() postDto:  UpdatePostType) {
+                     @Body() postDto:  UpdatePostDto) {
 
         let postUpdate = await this.postService.updatePosts(postId,postDto );
         if (postUpdate) {

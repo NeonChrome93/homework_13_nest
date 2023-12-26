@@ -4,7 +4,7 @@ export class CreateCommentDto  {
     content: string
 }
 
-export class UpdateCommentType  {
+export class UpdateCommentDto {
     content: string
 }
 

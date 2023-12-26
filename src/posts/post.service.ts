@@ -2,7 +2,7 @@
 
 
 import {Injectable} from "@nestjs/common";
-import {createPostType, PostType, PostViewType, UpdatePostType} from "../models/posts-models";
+import {createPostDto, PostType, PostViewType, UpdatePostDto} from "../models/posts-models";
 import {PostRepository} from "./post.repository";
 import {BlogRepository} from "../blogs/blog.repository";
 import {REACTIONS_ENUM} from "../models/comments-models";
@@ -22,7 +22,7 @@ export class PostService {
     //     return postRepository.readPostId(postId)
     // }
 
-    async createPost(inputDto: createPostType) : Promise<PostViewType | null> {
+    async createPost(inputDto: createPostDto) : Promise<PostViewType | null> {
         const blog = await this.blogRepository.readBlogsId(inputDto.blogId)
         if (!blog) return null
         const newPost: PostType = {
@@ -66,7 +66,7 @@ export class PostService {
         return true
     }
 
-    async updatePosts(postId: string, newUpdateRequest: UpdatePostType): Promise<boolean> {
+    async updatePosts(postId: string, newUpdateRequest: UpdatePostDto): Promise<boolean> {
         let post = await this.postRepository.readPostId(postId)
         if (!post) return false
         return this.postRepository.updatePosts(postId, newUpdateRequest)

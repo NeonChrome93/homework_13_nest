@@ -10,7 +10,7 @@ constructor(@InjectModel(Device.name) private DeviceModel: Model<DeviceDocument>
 
     async createDevice(device: Device): Promise<Device> {
         //await deviceModel.create(device)
-       return this.DeviceModel.create({...Device})
+       return this.DeviceModel.create({...device})
     }
 
     async findDevice(deviceId: string): Promise<Device | null> {

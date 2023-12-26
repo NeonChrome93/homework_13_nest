@@ -4,7 +4,7 @@ import {Filter, ObjectId} from "mongodb";
 
 import mongoose, {FilterQuery, Model} from "mongoose";
 import {Post, postDbType, PostDocument} from "./post.entity";
-import {PostType, PostViewType, UpdatePostType} from "../models/posts-models";
+import {PostType, PostViewType, UpdatePostDto} from "../models/posts-models";
 import {REACTIONS_ENUM} from "../models/comments-models";
 import {Injectable} from "@nestjs/common";
 import {InjectModel} from "@nestjs/mongoose";
@@ -40,7 +40,7 @@ constructor(@InjectModel(Post.name) private PostModel: Model<PostDocument>) {
        }
     }
 
-    async updatePosts(postId: string, newUpdateRequest: UpdatePostType): Promise<boolean> {
+    async updatePosts(postId: string, newUpdateRequest: UpdatePostDto): Promise<boolean> {
 
         const res = await this.PostModel.updateOne({_id: new ObjectId(postId)}, {
             $set: {

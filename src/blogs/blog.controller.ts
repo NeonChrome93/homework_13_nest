@@ -15,10 +15,11 @@ import {BlogQueryRepository} from "./blog.query.repository";
 import {BlogService} from "./blog.service";
 import {BlogRepository} from "./blog.repository";
 import {getQueryPagination} from "../utils/pagination";
-import {BlogsQueryType, CreateBlogDto, UpdateBlogType} from "../models/blogs-models";
-import {createPostType} from "../models/posts-models";
+import {BlogsQueryType, CreateBlogDto, UpdateBlogTypeDto} from "../models/blogs-models";
+import {createPostDto} from "../models/posts-models";
 import {PostService} from "../posts/post.service";
-import {AuthGuard} from "../guards/auth-guard";
+import {AuthGuard} from "../guards/auth.guard";
+
 
 
 
@@ -61,7 +62,7 @@ export class BlogController {
     @Put(':id')
     @HttpCode(204)
     async updateBlog(@Param('id') id: string,
-                     @Body() blogDto: UpdateBlogType) {
+                     @Body() blogDto: UpdateBlogTypeDto) {
         let blogUpdate = await this.blogService.updateBlogs(id, blogDto)
         if (blogUpdate) {
             return blogUpdate
@@ -88,7 +89,7 @@ export class BlogController {
 
     @Post(':id/posts')
     @HttpCode(201)
-    async createPostByBlogId(@Param('id') blogId: string,@Body() postDto: createPostType) {
+    async createPostByBlogId(@Param('id') blogId: string,@Body() postDto: createPostDto) {
         const post = await this.postService.createPost({...postDto, blogId})
         if (!post)  throw new NotFoundException('Blog with this id not found')
         return post

@@ -15,6 +15,14 @@ export type PostType = {
     // reactions: []
 }
 
+export type PostsQueryType = {
+    pageNumber: string,
+    pageSize: string,
+    sortBy: string,
+    sortDirection: string,
+    searchNameTerm: string | null
+}
+
 export type NewestLikeType = {
     "addedAt": string,
     "userId": string,
@@ -42,7 +50,7 @@ export class PostViewType {
 
 export type mongoTypePost = WithId<PostType>
 
-export class createPostType  {
+export class createPostDto {
 
     @MaxLength(30)
     @Trim()
@@ -68,7 +76,7 @@ export class createPostType  {
 }
 
 
-export class UpdatePostType  {
+export class UpdatePostDto {
     @MaxLength(30)
     @Trim()
     @IsString()
@@ -90,10 +98,3 @@ export class UpdatePostType  {
     "blogId": string
 }
 
-export type PostsQueryType = {
-    pageNumber: string,
-    pageSize: string,
-    sortBy: string,
-    sortDirection: string,
-    searchNameTerm: string | null
-}

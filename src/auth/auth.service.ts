@@ -1,13 +1,11 @@
-
 import {ObjectId} from "mongodb";
-import { UserCreateModel, UserViewModel} from "../models/users-models";
+import { UserCreateModelDto, UserViewModel} from "../models/users-models";
 import {User} from "../users/user.entity";
 import {randomUUID} from "crypto";
 import {UserService} from "../users/user.service";
-
 import {Injectable} from "@nestjs/common";
-import {JwtServices} from "../common/adapters/jwt.service";
-import {EmailService} from "../common/adapters/email.service";
+import {JwtAdapter} from "../common/adapters/jwt.adapter";
+import {EmailAdapter} from "../common/adapters/email.adapter";
 import {UsersRepository} from "../users/user.repository";
 import {add} from "date-fns"
 import bcrypt from "bcrypt";
@@ -18,14 +16,14 @@ import {DevicesRepository} from "../devices/device.repository";
 @Injectable()
 export class AuthService  {
     constructor(private readonly userService: UserService,
-                private readonly jwtService: JwtServices,
-                private readonly emailService: EmailService,
+                private readonly jwtService: JwtAdapter,
+                private readonly emailService: EmailAdapter,
                 private readonly deviceService: DevicesService,
                 private readonly deviceRepository: DevicesRepository,
                 private readonly usersRepository: UsersRepository) {
     }
 
-    async registrationUser(userCreateModel: UserCreateModel ): Promise<UserViewModel> {
+    async registrationUser(userCreateModel: UserCreateModelDto ): Promise<UserViewModel> {
         const passwordSalt = await bcrypt.genSalt(10);
         const passwordHash = await bcrypt.hash(userCreateModel.password, passwordSalt)
 
@@ -125,7 +123,7 @@ export class AuthService  {
         const deviceId = randomUUID()
         const refreshToken = this.jwtService.generateRefreshToken(user, deviceId);
         const lastActiveDate = this.jwtService.lastActiveDate(refreshToken)// взять дату выписки этого токена === lastActiveDate у девайся
-        //await this.deviceService.createDevice(ip, deviceId, user._id.toString(), title, new Date(lastActiveDate))
+        await this.deviceService.createDevice(ip, deviceId, user._id.toString(), title, new Date(lastActiveDate))
         return {
             accessToken,
             refreshToken
@@ -137,7 +135,7 @@ export class AuthService  {
         const accessToken = this.jwtService.createJWT(user);
         const newRefreshToken = this.jwtService.generateRefreshToken(user, payload.deviceId);
         const lastActiveDate = this.jwtService.lastActiveDate(newRefreshToken);
-       // await this.deviceRepository.updateDeviceLastActiveDate(payload.deviceId, lastActiveDate)
+       await this.deviceRepository.updateDeviceLastActiveDate(payload.deviceId, lastActiveDate)
         return {
             accessToken,
             newRefreshToken

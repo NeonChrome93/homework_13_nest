@@ -1,7 +1,7 @@
 import {Injectable, CanActivate, ExecutionContext, UnauthorizedException, createParamDecorator} from '@nestjs/common';
 import {Observable} from 'rxjs';
 import {UserService} from "../users/user.service";
-import {JwtServices} from "../common/adapters/jwt.service";
+import {JwtAdapter} from "../common/adapters/jwt.adapter";
 
 const users = {
     login: 'admin',
@@ -38,7 +38,7 @@ export const DeviceId = createParamDecorator(
 
 @Injectable()
 export class checkRefreshToken implements CanActivate {
-    constructor(private readonly jwtService: JwtServices,
+    constructor(private readonly jwtService: JwtAdapter,
                 private readonly userService: UserService,) {
     }
 

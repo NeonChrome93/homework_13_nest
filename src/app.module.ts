@@ -26,19 +26,21 @@ import {CommentService} from "./comments/comment.service";
 import {CommentRepository} from "./comments/comment.repository";
 import {AuthController} from "./auth/auth.controller";
 import {AuthService} from "./auth/auth.service";
-import {JwtServices} from "./common/adapters/jwt.service";
-import {EmailService} from "./common/adapters/email.service";
+import {JwtAdapter} from "./common/adapters/jwt.adapter";
+import {EmailAdapter} from "./common/adapters/email.adapter";
 import {IsUserAlreadyExistConstraint} from "./common/decorators/user-exist.decorator";
 import {Device, DevicesSchema} from "./devices/device.entity";
 import {DevicesRepository} from "./devices/device.repository";
 import {DevicesService} from "./devices/device.service";
 import {DevicesQueryRepository} from "./devices/device.query.repository";
-import {RegistrationConfirmCode} from "./common/decorators/registration-conformation.decorator";
-import {RegistrationEmailResending} from "./common/decorators/registration-email-resending.decorator";
+import {RegistrationConfirmCodeConstraint} from "./common/decorators/registration-conformation.decorator";
+import {RegistrationEmailResendingConstraint} from "./common/decorators/registration-email-resending.decorator";
 
 
-//const service=[]
-// provider: [...service, ]
+const services = [AppService,BlogService,PostService, UserService,CommentService,AuthService,DevicesService]
+const repositories = [BlogQueryRepository, BlogRepository,PostsQueryRepository, PostRepository, UsersQueryRepository, UsersRepository, CommentRepository,CommentsQueryRepository, DevicesRepository,DevicesQueryRepository]
+const adapters = [JwtAdapter, EmailAdapter]
+const constraints = [IsUserAlreadyExistConstraint,RegistrationConfirmCodeConstraint,RegistrationEmailResendingConstraint]
 
 @Module({
     imports: [
@@ -46,7 +48,7 @@ import {RegistrationEmailResending} from "./common/decorators/registration-email
         MongooseModule.forRoot(process.env.LOCAL_DB ==='true' ?  process.env.LOCAL_MONGO_URL! : process.env.MONGO_URL! ),
         MongooseModule.forFeature([{name: Blog.name, schema: BlogSchema}, {name: Post.name, schema: PostSchema},{name: User.name, schema: UserSchema},{name: Comments.name, schema: CommentSchema}, {name: Device.name, schema: DevicesSchema}])],
     controllers: [AppController, BlogController, PostController,UserController, CommentController, DelController, AuthController],
-    providers: [AppService,IsUserAlreadyExistConstraint,RegistrationConfirmCode,RegistrationEmailResending, BlogService, BlogQueryRepository, BlogRepository,PostService, UserService , CommentService, AuthService, JwtServices, EmailService,DevicesService, PostsQueryRepository, PostRepository, UsersQueryRepository, UsersRepository, CommentRepository,CommentsQueryRepository, DevicesRepository, DevicesQueryRepository ],
+    providers: [ ...services, ...repositories, ...constraints, ...adapters]
 })
 export class AppModule {
 }

@@ -9,7 +9,7 @@ import {UsersRepository} from "../../users/user.repository";
 import {Injectable} from "@nestjs/common";
 @Injectable()
 @ValidatorConstraint({ async: true })
-export class RegistrationConfirmCode implements ValidatorConstraintInterface {
+export class RegistrationConfirmCodeConstraint implements ValidatorConstraintInterface {
     constructor(private readonly userRepository: UsersRepository) {
     }
     async validate(code: string, args: ValidationArguments) {
@@ -33,7 +33,7 @@ export function IfCodeExist (validationOptions?: ValidationOptions) {
             propertyName: propertyName,
             options: validationOptions,
             constraints: [],
-            validator: RegistrationConfirmCode ,
+            validator: RegistrationConfirmCodeConstraint ,
         });
     };
 }

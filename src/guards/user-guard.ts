@@ -1,7 +1,7 @@
 import {CanActivate, createParamDecorator, ExecutionContext, Injectable, UnauthorizedException} from "@nestjs/common";
 import {UserService} from "../users/user.service";
 import * as jwt from 'jsonwebtoken';
-import {JwtServices} from "../common/adapters/jwt.service";
+import {JwtAdapter} from "../common/adapters/jwt.adapter";
 
 
 
@@ -9,7 +9,7 @@ import {JwtServices} from "../common/adapters/jwt.service";
 @Injectable()
 export class  authMiddleware implements CanActivate {
   constructor(private readonly userService: UserService,
-              private readonly jwtService: JwtServices ) {
+              private readonly jwtService: JwtAdapter ) {
   }
 
   async  canActivate(
@@ -38,7 +38,7 @@ export class  authMiddleware implements CanActivate {
 @Injectable()
 export class  softAuthMiddleware implements CanActivate {
     constructor(private readonly userService: UserService,
-                private readonly jwtService: JwtServices ) {
+                private readonly jwtService: JwtAdapter ) {
     }
 
     async  canActivate(

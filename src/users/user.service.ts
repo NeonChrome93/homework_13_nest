@@ -1,4 +1,4 @@
-import {UserCreateModel, UserViewModel} from "../models/users-models";
+import {UserCreateModelDto, UserViewModel} from "../models/users-models";
 import mongoose, {Types} from "mongoose";
 import {User} from "./user.entity";
 import {Injectable} from "@nestjs/common";
@@ -16,7 +16,7 @@ export class UserService {
     //     return usersRepository.getUsers(pagination)
     // },
 
-    async createUser(userCreateModel: UserCreateModel): Promise<UserViewModel> {
+    async createUser(userCreateModel: UserCreateModelDto): Promise<UserViewModel> {
         const passwordSalt = await bcrypt.genSalt(10)
         //  const passwordHash = await this.generateHash(userCreateModel.password, passwordSalt)
         const passwordHash = await bcrypt.hash(userCreateModel.password, passwordSalt)

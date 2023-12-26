@@ -1,7 +1,7 @@
 import {ObjectId} from "mongodb";
 import mongoose, {FilterQuery, Model, UpdateQuery} from "mongoose";
 import {Injectable} from "@nestjs/common";
-import { BlogsViewType, UpdateBlogType} from "../models/blogs-models";
+import { BlogsViewType, UpdateBlogTypeDto} from "../models/blogs-models";
 import {InjectModel} from "@nestjs/mongoose";
 import {Blog, BlogDbType, BlogDocument} from "./blog.entity";
 import {blogMapper} from "../utils/mappers/blogs-mapper";
@@ -41,7 +41,7 @@ export class BlogRepository {
     }
 
 
-    async updateBlogs(id: string, newUpdateRequest: UpdateBlogType): Promise<boolean> {
+    async updateBlogs(id: string, newUpdateRequest: UpdateBlogTypeDto): Promise<boolean> {
 
         // blogUpdate.name = newUpdateRequest.name,
         // blogUpdate.description = newUpdateRequest.description,

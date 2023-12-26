@@ -17,20 +17,20 @@ import e, {Response} from 'express';
 import {Request} from 'express';
 import {AuthService} from "./auth.service";
 import {UsersRepository} from "../users/user.repository";
-import {JwtServices} from "../common/adapters/jwt.service";
-import {checkRefreshToken, DeviceId} from "../guards/auth-guard";
+import {JwtAdapter} from "../common/adapters/jwt.adapter";
 import {UserAll, UserId} from "../common/decorators/get-user.decorator";
 import {DevicesService} from "../devices/device.service";
 import {DevicesQueryRepository} from "../devices/device.query.repository";
 import {DevicesRepository} from "../devices/device.repository";
-import {CodeDto, EmailDto,  newPasswordDto, UserCreateModel} from "../models/users-models";
+import {CodeDto, EmailDto,  NewPasswordDto, UserCreateModelDto} from "../models/users-models";
+import {checkRefreshToken, DeviceId} from "../guards/auth.guard";
 
 
 @Controller('auth')
 
 export class AuthController {
     constructor(private readonly authService: AuthService,
-                private readonly jwtService: JwtServices,
+                private readonly jwtService: JwtAdapter,
                 private readonly usersRepository: UsersRepository,
                 private readonly devicesService: DevicesService,
                 private readonly devicesRepository: DevicesRepository) {
@@ -113,7 +113,7 @@ export class AuthController {
 
     @Post('/registration')
     @HttpCode(204)
-    async registrationUser(@Body() dto: UserCreateModel) {
+    async registrationUser(@Body() dto: UserCreateModelDto) {
         await this.authService.registrationUser({
             login: dto.login,
             email: dto.email,
@@ -141,7 +141,7 @@ export class AuthController {
 
     @Post('/new-password')
     @HttpCode(204)
-    async newPassword(@Body() newPasswordDto: newPasswordDto) {
+    async newPassword(@Body() newPasswordDto: NewPasswordDto) {
         const result = await this.authService.newPasswordSet(newPasswordDto.newPassword, newPasswordDto.recoveryCode)
         //0. валидация req.body
         //1. найти юзера по recoveryCode(если юзера нет в бд, кинуть ошибку)

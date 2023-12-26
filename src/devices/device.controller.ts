@@ -1,17 +1,17 @@
 import {Controller, Delete, Get, HttpCode, Param, Req, UnauthorizedException, UseGuards} from "@nestjs/common";
 import {Request} from 'express';
-import {JwtServices} from "../common/adapters/jwt.service";
-import {checkRefreshToken, DeviceId} from "../guards/auth-guard";
+import {JwtAdapter} from "../common/adapters/jwt.adapter";
 import {DevicesService} from "./device.service";
 import {UserAll, UserId} from "../common/decorators/get-user.decorator";
 import {User} from "../users/user.entity"
 import {DevicesQueryRepository} from "./device.query.repository";
+import {checkRefreshToken, DeviceId} from "../guards/auth.guard";
 
 @Controller('security')
 
 
 export class DeviceController {
-    constructor(private readonly jwtService: JwtServices,
+    constructor(private readonly jwtService: JwtAdapter,
                 private readonly devicesService: DevicesService,
                 private readonly devicesQueryRepository: DevicesQueryRepository) {
     }

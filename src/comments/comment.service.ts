@@ -1,4 +1,4 @@
-import {CommentsViewType, REACTIONS_ENUM, UpdateCommentType} from "../models/comments-models";
+import {CommentsViewType, REACTIONS_ENUM, UpdateCommentDto} from "../models/comments-models";
 import {CommentsDBType} from "./comment.entity";
 import mongoose from "mongoose";
 import {CommentsQueryRepository} from "./comment.query.repository";
@@ -56,7 +56,7 @@ export class CommentService {
     }
 
 
-    async updateComment(commentId: string, newUpdateRequest: UpdateCommentType): Promise<boolean> {
+    async updateComment(commentId: string, newUpdateRequest: UpdateCommentDto): Promise<boolean> {
         let comment = await this.commentsQueryRepository.readCommentId(commentId)
         if (!comment) return false
         return this.commentRepository.updateComment(commentId, newUpdateRequest)
