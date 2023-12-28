@@ -2,6 +2,7 @@ import {WithId} from "mongodb";
 import {REACTIONS_ENUM} from "./comments-models";
 import {IsNotEmpty, IsString, MaxLength} from "class-validator";
 import {Trim} from "./custom";
+import {IsBlogExist} from "../common/decorators/blog-exist.decorator";
 
 
 export type PostType = {
@@ -69,6 +70,7 @@ export class createPostDto {
     @IsString()
     @IsNotEmpty()
     "content": string
+    @IsBlogExist({message: 'blog not exist'})
     @Trim()
     @IsString()
     @IsNotEmpty()

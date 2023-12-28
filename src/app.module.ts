@@ -35,12 +35,13 @@ import {DevicesService} from "./devices/device.service";
 import {DevicesQueryRepository} from "./devices/device.query.repository";
 import {RegistrationConfirmCodeConstraint} from "./common/decorators/registration-conformation.decorator";
 import {RegistrationEmailResendingConstraint} from "./common/decorators/registration-email-resending.decorator";
+import {IsBlogExistConstraint} from "./common/decorators/blog-exist.decorator";
 
 
 const services = [AppService,BlogService,PostService, UserService,CommentService,AuthService,DevicesService]
 const repositories = [BlogQueryRepository, BlogRepository,PostsQueryRepository, PostRepository, UsersQueryRepository, UsersRepository, CommentRepository,CommentsQueryRepository, DevicesRepository,DevicesQueryRepository]
 const adapters = [JwtAdapter, EmailAdapter]
-const constraints = [IsUserAlreadyExistConstraint,RegistrationConfirmCodeConstraint,RegistrationEmailResendingConstraint]
+const constraints = [IsUserAlreadyExistConstraint,RegistrationConfirmCodeConstraint,RegistrationEmailResendingConstraint, IsBlogExistConstraint]
 
 @Module({
     imports: [
