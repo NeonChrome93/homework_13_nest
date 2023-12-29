@@ -10,7 +10,7 @@ const users = {
 
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class BasicAuthGuard implements CanActivate {
     canActivate(
         context: ExecutionContext,
     ): boolean | Promise<boolean> | Observable<boolean> {

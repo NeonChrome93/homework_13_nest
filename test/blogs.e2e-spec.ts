@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
+import {appSettings} from "../dist/common/config/app.settings";
 
 
 const createBlog = {
@@ -32,6 +33,7 @@ const headers = {
 
 describe('BlogAPI (e2e)', () => {
   let app: INestApplication;
+  let server
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -39,7 +41,10 @@ describe('BlogAPI (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    appSettings(app)
     await app.init();
+    //server = app.getHttpServer()
+
   });
 
   it('deleteAll', async ()=> {
