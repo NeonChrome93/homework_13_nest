@@ -9,7 +9,7 @@ import {
     Query, UseGuards
 } from "@nestjs/common";
 import {BlogsQueryType} from "../models/blogs-models";
-import {createPostDto, PostsQueryType, PostType, UpdatePostDto} from "../models/posts-models";
+import {createPostDto, likesDto, PostsQueryType, PostType, UpdatePostDto} from "../models/posts-models";
 import {query} from "express";
 import {getQueryPagination} from "../utils/pagination";
 import {PostsQueryRepository} from "./post.query.repository";
@@ -18,12 +18,13 @@ import {BlogService} from "../blogs/blog.service";
 import {BlogRepository} from "../blogs/blog.repository";
 import {PostService} from "./post.service";
 import {PostRepository} from "./post.repository";
-import {authMiddleware} from "../guards/user-guard";
+import {BearerAuthGuard, softAuthMiddleware} from "../guards/user-guard";
 import {CommentsQueryRepository} from "../comments/comment.query.repository";
 import {updateLikeDto} from "../models/comments-models";
 import {User} from "../users/user.entity";
 import {CommentService} from "../comments/comment.service";
 import {UserAll, UserId} from "../common/decorators/get-user.decorator";
+import {BasicAuthGuard} from "../guards/basic-auth-guard.service";
 
 
 @Controller('posts')
@@ -54,26 +55,15 @@ export class PostController {
 
     @Post()
     @HttpCode(201)
-
+    @UseGuards(BasicAuthGuard)
     async createPosts(@Body() postDto :  createPostDto) {
         const newPost = await this.postService.createPost(postDto);
         return newPost
-        // @Put()
-        // @HttpCode(201)
-        // async updateLikeStatus(@Param('id') postId: string, ??@Body() postDto : PostType ) {
-        //     const user = null
-        //     const post = await this.postRepository.readPostId(postId)
-        //     if(!post) throw new NotFoundException('Post with this id not found')
-        //     const status = req.body.likeStatus
-        //     let addLikes = await postService.addLikesByPost(postId, user._id.toString(), status)
-        //     if(!addLikes) {
-        //         return res.sendStatus(404)
-        //     }
-        //     return res.sendStatus(204)
-        // }
+
     }
     @Put(':id')
     @HttpCode(204)
+    @UseGuards(BasicAuthGuard)
     async updatePost(@Param('id') postId: string,
                      @Body() postDto:  UpdatePostDto) {
 
@@ -85,6 +75,7 @@ export class PostController {
 
     @Delete(':id')
     @HttpCode(204)
+    @UseGuards(BasicAuthGuard)
     async deletePost(@Param('id') postId: string) {
 
         const isDeleted = await this.postService.deletePosts(postId);
@@ -94,8 +85,8 @@ export class PostController {
     }
 
     @Get(':postId/comments')
-    @UseGuards(authMiddleware)
-    async getCommentByPostId(@Query() queryDto: PostsQueryType, @Param('id') postId: string, @UserId() userId: string | null) {
+    @UseGuards(softAuthMiddleware)
+    async getCommentByPostId(@Query() queryDto: PostsQueryType, @Param('postId') postId: string, @UserId() userId: string | null) {
         //const userId = req.userId
         const pagination = getQueryPagination(queryDto);
         const post = await this.postRepository.readPostId(postId);
@@ -108,7 +99,8 @@ export class PostController {
     }
 
     @Post(':postId/comments')
-    async createCommentByPostId(@Param('id') postId: string,@Body() dto: updateLikeDto,@UserAll() user: User) {
+    @UseGuards(BearerAuthGuard)
+    async createCommentByPostId(@Param('postId') postId: string,@Body() dto: updateLikeDto,@UserAll() user: User) {
         const post = await this.postRepository.readPostId(postId);
         if (!post) throw new NotFoundException();
 
@@ -116,6 +108,19 @@ export class PostController {
         const userLogin =user!.login;
         const newComment = await this.commentService.createComment(post._id.toString(), userId, userLogin, dto.status);
         return newComment;
+    }
+
+    @Put(':postId/like-status')
+    @HttpCode(204)
+    @UseGuards(BearerAuthGuard)
+    async updateLikeStatus(@Param('postId') postId: string, @Body() body : likesDto , @UserId() userId: string  ) {
+        const post = await this.postRepository.readPostId(postId)
+        if(!post) throw new NotFoundException('Post with this id not found')
+        let addLikes = await this.postService.addLikesByPost(postId, userId, body.likeStatus)
+        if(!addLikes) {
+            throw new NotFoundException();
+        }
+        return addLikes
     }
 
 }
