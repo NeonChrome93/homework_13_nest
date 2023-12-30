@@ -1,6 +1,6 @@
 import {WithId} from "mongodb";
 import {REACTIONS_ENUM} from "./comments-models";
-import {IsNotEmpty, IsString, MaxLength} from "class-validator";
+import {IsEnum, IsNotEmpty, IsString, MaxLength} from "class-validator";
 import {Trim} from "./custom";
 import {IsBlogExist} from "../common/decorators/blog-exist.decorator";
 
@@ -57,24 +57,46 @@ export class createPostDto {
     @Trim()
     @IsString()
     @IsNotEmpty()
-    "title": string
+    title: string
 
     @MaxLength(100)
     @Trim()
     @IsString()
     @IsNotEmpty()
-    "shortDescription": string
+    shortDescription: string
 
     @MaxLength(1000)
     @Trim()
     @IsString()
     @IsNotEmpty()
-    "content": string
-    @IsBlogExist({message: 'blog not exist'})
+    content: string
+    @IsBlogExist({message:'blog not found'})
     @Trim()
     @IsString()
     @IsNotEmpty()
-    "blogId": string
+    blogId: string
+}
+
+export class createPostByBlogIdDto {
+
+    @MaxLength(30)
+    @Trim()
+    @IsString()
+    @IsNotEmpty()
+    title: string
+
+    @MaxLength(100)
+    @Trim()
+    @IsString()
+    @IsNotEmpty()
+    shortDescription: string
+
+    @MaxLength(1000)
+    @Trim()
+    @IsString()
+    @IsNotEmpty()
+    content: string
+
 }
 
 
@@ -83,20 +105,24 @@ export class UpdatePostDto {
     @Trim()
     @IsString()
     @IsNotEmpty()
-    "title": string
+    title: string
     @MaxLength(100)
     @Trim()
     @IsString()
     @IsNotEmpty()
-    "shortDescription": string
+    shortDescription: string
     @MaxLength(1000)
     @Trim()
     @IsString()
     @IsNotEmpty()
-    "content": string
+    content: string
     @Trim()
     @IsString()
     @IsNotEmpty()
-    "blogId": string
+    blogId: string
 }
 
+export class likesDto {
+    @IsEnum(REACTIONS_ENUM)
+    likeStatus: REACTIONS_ENUM
+}
