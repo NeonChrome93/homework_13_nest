@@ -58,7 +58,7 @@ export class Comments  {
     commentatorInfo: {CommentInfo }
     @Prop( {type: Date, default: Date.now})
     createdAt: Date
-    @Prop( { type: statusSchema, default: []})
+    @Prop( { type: [statusSchema], default: []})
     reactions:  Status[]
 
 }
