@@ -6,30 +6,43 @@ import {
     ValidationArguments,
 } from 'class-validator';
 import {UsersRepository} from "../../users/user.repository";
-import {Injectable} from "@nestjs/common";
+import {Body, Injectable, ValidationPipe} from "@nestjs/common";
 import {BlogRepository} from "../../blogs/blog.repository";
+import {Param} from "@nestjs/common";
+import {BlogIdDto} from "../../models/blogs-models";
+import {createPostByBlogIdDto} from "../../models/posts-models";
+
 @Injectable()
 @ValidatorConstraint({ async: true })
 export class IsBlogExistConstraint implements ValidatorConstraintInterface {
     constructor(private readonly blogRepository: BlogRepository) {
     }
-    validate(blogId: any, args: ValidationArguments) {
-        return this.blogRepository.readBlogsId(blogId).then(blog => {
-            if (blog) return false;
-            return true;
-        });
+   async validate(blogId: any, args: ValidationArguments) {
+
+        const blog = await this.blogRepository.readBlogsId(blogId)
+       console.log(blog)
+       return !!blog;
+
+
     }
 }
 
 export function IsBlogExist(validationOptions?: ValidationOptions) {
     return function (object: Object, propertyName: string) {
         registerDecorator({
-            name: 'IsUserAlreadyExist',
+            name: 'IsBlogExist',
             target: object.constructor,
             propertyName: propertyName,
             options: validationOptions,
             constraints: [],
-            validator: IsBlogExist,
+            validator: IsBlogExistConstraint,
         });
     };
 }
+
+// async createPostByBlogId(@Param('blogId',new ValidationPipe({ - для params можно юзать так
+//     transform: true,
+//     transformOptions: {enableImplicitConversion: true},
+//     forbidNonWhitelisted: true
+// })) blogId: BlogIdDto, @Body() postDto: createPostByBlogIdDto) {
+//     const post = await this.postService.createPost({...postDto, blogId : blogId as unknown as string})
