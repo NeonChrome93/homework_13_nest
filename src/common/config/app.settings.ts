@@ -2,6 +2,7 @@ import {BadRequestException, INestApplication, ValidationError, ValidationPipe} 
 import {HttpExceptionFilter} from "../exception-filter";
 import {useContainer} from "class-validator";
 import {AppModule} from "../../app.module";
+import cookieParser from "cookie-parser";
 
 export const appSettings = (app: INestApplication) => {
     app.useGlobalPipes(
@@ -27,4 +28,6 @@ export const appSettings = (app: INestApplication) => {
     app.useGlobalFilters(new HttpExceptionFilter());
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
     app.enableCors()
+    app.use(cookieParser())
+
 }
