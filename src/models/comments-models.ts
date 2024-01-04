@@ -1,12 +1,18 @@
+import {IsEnum, IsIn, IsNotEmpty, IsString, MaxLength, MinLength} from "class-validator";
+import {Trim} from "./custom";
 
-
-export class CreateCommentDto  {
-    content: string
-}
 
 export class UpdateCommentDto {
+
+    @MaxLength(300)
+    @MinLength(20)
+    @Trim()
+    @IsString()
+    @IsNotEmpty()
     content: string
 }
+
+
 
 export enum REACTIONS_ENUM {
     Like = "Like",
@@ -15,7 +21,8 @@ export enum REACTIONS_ENUM {
 }
 
 export class updateLikeDto{
-    status: REACTIONS_ENUM
+    @IsIn(Object.values(REACTIONS_ENUM))
+    likeStatus: REACTIONS_ENUM
 
 }
 

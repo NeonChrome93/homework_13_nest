@@ -1,6 +1,7 @@
-import { IsNotEmpty, IsString, IsUrl, MaxLength} from "class-validator";
+import {IsMongoId, IsNotEmpty, IsString, IsUrl, IsUUID, MaxLength} from "class-validator";
 import {ObjectId} from "mongodb";
 import {Trim} from "./custom";
+import {IsBlogExist} from "../common/decorators/blog-exist.decorator";
 
 
 export class Blog {
@@ -71,6 +72,11 @@ export class CreateBlogDto
     //     websiteUrl: string
     // }
 
+export class BlogIdDto {
+    @IsMongoId()
+    @IsBlogExist({message:'blog not exist'})
+    blogId: string
+}
 
 export class UpdateBlogTypeDto
     {
@@ -79,15 +85,15 @@ export class UpdateBlogTypeDto
         @Trim()
         @IsString()
         @IsNotEmpty()
-        "name": string
+        name: string
         @MaxLength(500)
         @Trim()
         @IsString()
         @IsNotEmpty()
-        "description": string
+        description: string
         @IsUrl()
         @Trim()
         @IsString()
         @IsNotEmpty()
-        "websiteUrl": string
+        websiteUrl: string
     }

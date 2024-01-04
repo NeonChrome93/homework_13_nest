@@ -116,6 +116,7 @@ export class UpdatePostDto {
     @IsString()
     @IsNotEmpty()
     content: string
+    @IsBlogExist({message: "blog not found"})
     @Trim()
     @IsString()
     @IsNotEmpty()
