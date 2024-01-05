@@ -18,9 +18,9 @@ import {BlogService} from "../blogs/blog.service";
 import {BlogRepository} from "../blogs/blog.repository";
 import {PostService} from "./post.service";
 import {PostRepository} from "./post.repository";
-import {BearerAuthGuard, softAuthMiddleware} from "../guards/user-guard";
+import {BearerAuthGuard, SoftBearerAuthGuard} from "../guards/user-guard";
 import {CommentsQueryRepository} from "../comments/comment.query.repository";
-import {updateLikeDto} from "../models/comments-models";
+import {UpdateCommentDto, updateLikeDto} from "../models/comments-models";
 import {User} from "../users/user.entity";
 import {CommentService} from "../comments/comment.service";
 import {UserAll, UserId} from "../common/decorators/get-user.decorator";
@@ -37,16 +37,16 @@ export class PostController {
     }
 
     @Get()
-    async getPosts(@Query() queryDto: PostsQueryType) {
-        const userId = null
+    @UseGuards(SoftBearerAuthGuard)
+    async getPosts(@Query() queryDto: PostsQueryType, @UserId() userId: string | null) {
         const pagination = getQueryPagination(queryDto);
         const arr = await this.postsQueryRepository.readPosts(pagination, userId);
         return arr
     }
 
     @Get(':id')
-    async getPostById(@Param('id') postId: string) {
-        const userId = null
+    @UseGuards(SoftBearerAuthGuard)
+    async getPostById(@Param('id') postId: string, @UserId() userId: string | null) {
         let foundId = await this.postsQueryRepository.readPostId(postId, userId);
         if (foundId) {
             return foundId
@@ -59,8 +59,8 @@ export class PostController {
     async createPosts(@Body() postDto :  createPostDto) {
         const newPost = await this.postService.createPost(postDto);
         return newPost
-
     }
+
     @Put(':id')
     @HttpCode(204)
     @UseGuards(BasicAuthGuard)
@@ -85,7 +85,7 @@ export class PostController {
     }
 
     @Get(':postId/comments')
-    @UseGuards(softAuthMiddleware)
+    @UseGuards(SoftBearerAuthGuard)
     async getCommentByPostId(@Query() queryDto: PostsQueryType, @Param('postId') postId: string, @UserId() userId: string | null) {
         //const userId = req.userId
         const pagination = getQueryPagination(queryDto);
@@ -100,13 +100,13 @@ export class PostController {
 
     @Post(':postId/comments')
     @UseGuards(BearerAuthGuard)
-    async createCommentByPostId(@Param('postId') postId: string,@Body() dto: updateLikeDto,@UserAll() user: User) {
+    async createCommentByPostId(@Param('postId') postId: string, @Body() dto: UpdateCommentDto, @UserAll() user: User) {
         const post = await this.postRepository.readPostId(postId);
         if (!post) throw new NotFoundException();
 
         const userId = user!._id.toString();
         const userLogin =user!.login;
-        const newComment = await this.commentService.createComment(post._id.toString(), userId, userLogin, dto.status);
+        const newComment = await this.commentService.createComment(post._id.toString(), userId, userLogin, dto.content);
         return newComment;
     }
 

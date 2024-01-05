@@ -15,7 +15,7 @@ import {UserCreateModelDto, UsersQueryType} from "../models/users-models";
 import {getQueryUserPagination} from "../utils/pagination";
 import {UsersQueryRepository} from "./user.query.repository";
 import {UserService} from "./user.service";
-import {AuthGuard} from "../guards/auth.guard";
+import {BasicAuthGuard} from "../guards/basic-auth-guard.service";
 
 
 
@@ -26,7 +26,7 @@ export class UserController {
     }
 
     @Get()
-    @UseGuards(AuthGuard)
+    @UseGuards(BasicAuthGuard)
     async getUsers (@Query() queryDto: UsersQueryType) {
     const pagination = getQueryUserPagination(queryDto)
     const arr = await this.usersQueryRepository.getUsers(pagination);
@@ -37,7 +37,7 @@ export class UserController {
 
     @Post()
     @HttpCode(201)
-    @UseGuards(AuthGuard)
+    @UseGuards(BasicAuthGuard)
     async CreateUser (@Body() userDto: UserCreateModelDto) {
 
         const newUser = await this.userService.createUser(userDto);
@@ -46,7 +46,7 @@ export class UserController {
 
     @Delete(':id')
     @HttpCode(204)
-    @UseGuards(AuthGuard)
+    @UseGuards(BasicAuthGuard)
     async deleteUser(@Param('id') userId: string)  {
         const isDeleted = await this.userService.deleteUser(userId);
         if(isDeleted) {
