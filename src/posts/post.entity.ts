@@ -17,8 +17,22 @@ export type postDbType= {
 
 export type PostDocument = HydratedDocument<Post>;
 
-@Schema(({collection: 'posts'}))
+@Schema({_id: false})
+class Status {
+    @Prop( {required: true})
+    userId: string
+    @Prop( {required: true})
+    login: string
+    @Prop( {default: new Date})
+    createdAt: Date
+    @Prop( {required: true, enum: REACTIONS_ENUM})
+    status: string
+}
 
+const statusSchema = SchemaFactory.createForClass(Status);
+
+
+@Schema(({collection: 'posts'}))
 export class Post {
     @Prop({required: true,  type: mongoose.Schema.Types.ObjectId })
     _id: Types.ObjectId
@@ -34,7 +48,7 @@ export class Post {
     blogName: string
     @Prop({default: new Date})
     createdAt: Date
-    @Prop()
+    @Prop({type: [statusSchema]})
      reactions: StatusType[]
 
 }
