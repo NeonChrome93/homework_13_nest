@@ -2,8 +2,10 @@ import {PostViewType} from "../dist/models/posts-models";
 import {INestApplication} from "@nestjs/common";
 import {Test, TestingModule} from "@nestjs/testing";
 import {AppModule} from "../src/app.module";
-import {appSettings} from "../dist/common/config/app.settings";
 import request from "supertest";
+import {appSettings} from "../src/common/config/app.settings";
+import {UserDbModel} from "../dist/users/user.entity";
+import {UserViewModel} from "../src/models/users-models";
 
 const createBlog = {
     name: "Yaroslaw",
@@ -20,9 +22,20 @@ const createPost = {
 
 }
 
+export type PaginationModels<T> = {
+    pagesCount: number,
+    page: number,
+    pageSize: number,
+    totalCount: number,
+    items: T
+}
+
 let postId = ''
 let commentId = ""
 let post: PostViewType;
+let user1: UserViewModel;
+let user2: UserViewModel;
+let user3: UserViewModel;
 
 const createUser1 = {
     login: "Meine",
@@ -66,13 +79,14 @@ let token3 = "";
 
 let token4 = "";
 
-describe('Likes Posts',() => {
+describe('Likes Posts', () => {
     let app: INestApplication;
 
 
     beforeEach(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
+
         }).compile();
 
         app = moduleFixture.createNestApplication();
@@ -82,10 +96,9 @@ describe('Likes Posts',() => {
 
     });
 
-    it('deleteAll', async ()=> {
+    it('deleteAll', async () => {
         await request(app.getHttpServer()).delete('/testing/all-data').expect(204)
     })
-
 
 
     it('deleteAll', async () => {
@@ -107,9 +120,11 @@ describe('Likes Posts',() => {
     })
 
     it('CreateUser', async () => {
-        const user1 = await request(app.getHttpServer()).post('/users').set(headers).send(createUser1).expect(201)
-        const user2 = await request(app.getHttpServer()).post('/users').set(headers).send(createUser2).expect(201)
-        const user3 = await request(app.getHttpServer()).post('/users').set(headers).send(createUser3).expect(201)
+        user1 = (await request(app.getHttpServer()).post('/users').set(headers).send(createUser1).expect(201)).body
+
+
+        user2 = (await request(app.getHttpServer()).post('/users').set(headers).send(createUser2).expect(201)).body
+         user3 = (await request(app.getHttpServer()).post('/users').set(headers).send(createUser3).expect(201)).body
         const user4 = await request(app.getHttpServer()).post('/users').set(headers).send(createUser4).expect(201)
         // console.log(user1.body)
     })
@@ -139,10 +154,10 @@ describe('Likes Posts',() => {
     })
 
     it('Likes Posts ', async () => {
-        let likesPostUser1 = await request(app.getHttpServer()).put(`/posts/${postId}/like-status`).set({authorization:"Bearer " + token1})
-            .send({  likeStatus: "Like"}).expect(204)
+        let likesPostUser1 = await request(app.getHttpServer()).put(`/posts/${postId}/like-status`).set({authorization: "Bearer " + token1})
+            .send({likeStatus: "Like"}).expect(204)
 
-        let res = await request(app.getHttpServer()).get(`/posts/${postId}`).expect(200)
+        let res = await request(app.getHttpServer()).get(`/posts/${postId}`).set({authorization: "Bearer " + token1}).expect(200)
         expect(res.body).toEqual({
             id: post.id,
             title: post.title,
@@ -151,18 +166,18 @@ describe('Likes Posts',() => {
             blogId: post.blogId,
             blogName: post.blogName,
             createdAt: post.createdAt,
-            extendedLikesInfo:{
+            extendedLikesInfo: {
                 likesCount: 1,
                 dislikesCount: 0,
-                myStatus: 'None',
+                myStatus: 'Like',
                 newestLikes: expect.any(Array)
             }
         })
 
         expect(res.body.extendedLikesInfo.newestLikes.length).toBe(1)
 
-        await request(app.getHttpServer()).put(`/posts/${postId}/like-status`).set({authorization:"Bearer " + token2})
-            .send({  likeStatus: "Like"}).expect(204)
+        await request(app.getHttpServer()).put(`/posts/${postId}/like-status`).set({authorization: "Bearer " + token2})
+            .send({likeStatus: "Like"}).expect(204)
 
         let res2 = await request(app.getHttpServer()).get(`/posts/${postId}`).expect(200)
         console.log('RESPONSE2:', res2.body)
@@ -175,7 +190,7 @@ describe('Likes Posts',() => {
             blogId: post.blogId,
             blogName: post.blogName,
             createdAt: post.createdAt,
-            extendedLikesInfo:{
+            extendedLikesInfo: {
                 likesCount: 2,
                 dislikesCount: 0,
                 myStatus: 'None',
@@ -185,8 +200,8 @@ describe('Likes Posts',() => {
 
         expect(res2.body.extendedLikesInfo.newestLikes.length).toBe(2)
 
-        let likesPostUser3 = await request(app.getHttpServer()).put(`/posts/${postId}/like-status`).set({authorization:"Bearer " + token3})
-            .send({  likeStatus: "Dislike"}).expect(204)
+        let likesPostUser3 = await request(app.getHttpServer()).put(`/posts/${postId}/like-status`).set({authorization: "Bearer " + token3})
+            .send({likeStatus: "Dislike"}).expect(204)
 
         let res3 = await request(app.getHttpServer()).get(`/posts/${postId}`).expect(200)
 
@@ -198,7 +213,7 @@ describe('Likes Posts',() => {
             blogId: post.blogId,
             blogName: post.blogName,
             createdAt: post.createdAt,
-            extendedLikesInfo:{
+            extendedLikesInfo: {
                 likesCount: 2,
                 dislikesCount: 1,
                 myStatus: 'None',
@@ -208,8 +223,8 @@ describe('Likes Posts',() => {
 
         expect(res3.body.extendedLikesInfo.newestLikes.length).toBe(2)
 
-        await request(app.getHttpServer()).put(`/posts/${postId}/like-status`).set({authorization:"Bearer " + token4})
-            .send({  likeStatus: "Like"}).expect(204)
+        await request(app.getHttpServer()).put(`/posts/${postId}/like-status`).set({authorization: "Bearer " + token4})
+            .send({likeStatus: "Like"}).expect(204)
 
         let res4 = await request(app.getHttpServer()).get(`/posts/${postId}`).expect(200)
 
@@ -221,7 +236,7 @@ describe('Likes Posts',() => {
             blogId: post.blogId,
             blogName: post.blogName,
             createdAt: post.createdAt,
-            extendedLikesInfo:{
+            extendedLikesInfo: {
                 likesCount: 3,
                 dislikesCount: 1,
                 myStatus: 'None',
@@ -231,10 +246,10 @@ describe('Likes Posts',() => {
 
         expect(res4.body.extendedLikesInfo.newestLikes.length).toBe(3)
 
-        await request(app.getHttpServer()).put(`/posts/${postId}/like-status`).set({authorization:"Bearer " + token4})
-            .send({  likeStatus: "Dislike"}).expect(204)
+        await request(app.getHttpServer()).put(`/posts/${postId}/like-status`).set({authorization: "Bearer " + token4})
+            .send({likeStatus: "Dislike"}).expect(204)
 
-        let res5 = await request(app.getHttpServer()).get(`/posts/${postId}`).set({authorization:"Bearer " + token2}).expect(200)
+        let res5 = await request(app.getHttpServer()).get(`/posts/${postId}`).set({authorization: "Bearer " + token2}).expect(200)
 
         expect(res5.body).toEqual({
             id: post.id,
@@ -244,7 +259,7 @@ describe('Likes Posts',() => {
             blogId: post.blogId,
             blogName: post.blogName,
             createdAt: post.createdAt,
-            extendedLikesInfo:{
+            extendedLikesInfo: {
                 likesCount: 2,
                 dislikesCount: 2,
                 myStatus: "Like",
@@ -254,8 +269,8 @@ describe('Likes Posts',() => {
 
         expect(res5.body.extendedLikesInfo.newestLikes.length).toBe(2)
 
-        await request(app.getHttpServer()).put(`/posts/${postId}/like-status`).set({authorization:"Bearer " + token3})
-            .send({  likeStatus: "None"}).expect(204)
+        await request(app.getHttpServer()).put(`/posts/${postId}/like-status`).set({authorization: "Bearer " + token3})
+            .send({likeStatus: "Like"}).expect(204)
 
         let res6 = await request(app.getHttpServer()).get(`/posts/${postId}`).expect(200)
 
@@ -267,16 +282,92 @@ describe('Likes Posts',() => {
             blogId: post.blogId,
             blogName: post.blogName,
             createdAt: post.createdAt,
-            extendedLikesInfo:{
-                likesCount: 2,
+            extendedLikesInfo: {
+                likesCount: 3,
                 dislikesCount: 1,
                 myStatus: 'None',
                 newestLikes: expect.any(Array)
             }
         })
 
-        expect(res6.body.extendedLikesInfo.newestLikes.length).toBe(2)
+        expect(res6.body.extendedLikesInfo.newestLikes.length).toBe(3)
 
     });
 
+    it('All Posts For Specific Blog ', async () => {
+        let allPostsForSpBlog = await request(app.getHttpServer()).get(`/blogs/${createPost.blogId}/posts`).set({authorization: "Bearer " + token3}).expect(200)
+
+        expect(allPostsForSpBlog.body.items[0]).toEqual({
+            id: post.id,
+            title: post.title,
+            shortDescription: post.shortDescription,
+            content: post.content,
+            blogId: post.blogId,
+            blogName: post.blogName,
+            createdAt: post.createdAt,
+            extendedLikesInfo: {
+                likesCount: 3,
+                dislikesCount: 1,
+                myStatus: 'Like',
+                newestLikes: [
+                    {
+                        addedAt: expect.any(String),
+                        userId: user3.id,
+                        login: user3.login,
+                    },
+                    {
+                        addedAt: expect.any(String),
+                        userId: user2.id,
+                        login: user2.login,
+                    },
+                    {
+                        addedAt: expect.any(String),
+                        userId: user1.id,
+                        login: user1.login,
+                    },
+                ]
+            }
+        })
+
+        // expect(allPostsForSpBlog.body).toEqual(
+        //     {
+        //         pagesCount: expect.any(Number),
+        //         page:  expect.any(Number),
+        //         pageSize:  expect.any(Number),
+        //         totalCount:  expect.any(Number),
+        //         items:
+        //             [{
+        //                 id: post.id,
+        //                 title: post.title,
+        //                 shortDescription: post.shortDescription,
+        //                 content: post.content,
+        //                 blogId: post.blogId,
+        //                 blogName: post.blogName,
+        //                 createdAt: post.createdAt,
+        //                 extendedLikesInfo: {
+        //                     likesCount: 3,
+        //                     dislikesCount: 1,
+        //                     myStatus: 'Like',
+        //                     newestLikes:  [
+        //                         {
+        //                             addedAt:  expect.any(String),
+        //                             userId : user2.id,
+        //                             login: user2.login,
+        //                         },
+        //                         {
+        //                             addedAt:  expect.any(String),
+        //                             userId : user1.id,
+        //                             login: user1.login,
+        //                         },
+        //                     ]
+        //
+        //                 }
+        //
+        //
+        //             }]
+        //     }
+        // )
+
+
+    })
 })
