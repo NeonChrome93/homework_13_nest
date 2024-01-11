@@ -3,7 +3,7 @@ import { UserCreateModelDto, UserViewModel} from "../models/users-models";
 import {User} from "../users/user.entity";
 import {randomUUID} from "crypto";
 import {UserService} from "../users/user.service";
-import {Injectable} from "@nestjs/common";
+import {Injectable, UseGuards} from "@nestjs/common";
 import {JwtAdapter} from "../common/adapters/jwt.adapter";
 import {EmailAdapter} from "../common/adapters/email.adapter";
 import {UsersRepository} from "../users/user.repository";
@@ -11,6 +11,7 @@ import {add} from "date-fns"
 import bcrypt from "bcrypt";
 import {DevicesService} from "../devices/device.service";
 import {DevicesRepository} from "../devices/device.repository";
+import {ThrottlerGuard} from "@nestjs/throttler";
 
 
 @Injectable()

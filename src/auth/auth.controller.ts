@@ -11,7 +11,7 @@ import {
     UnauthorizedException,
     UseGuards
 } from "@nestjs/common";
-import {authMiddleware} from "../guards/user-guard";
+import {BearerAuthGuard} from "../guards/user-guard";
 import {User, UserDocument} from "../users/user.entity";
 import e, {Response} from 'express';
 import {Request} from 'express';
@@ -23,7 +23,8 @@ import {DevicesService} from "../devices/device.service";
 import {DevicesQueryRepository} from "../devices/device.query.repository";
 import {DevicesRepository} from "../devices/device.repository";
 import {CodeDto, EmailDto,  NewPasswordDto, UserCreateModelDto} from "../models/users-models";
-import {checkRefreshToken, DeviceId} from "../guards/auth.guard";
+import {AuthSessionTokenGuard, DeviceId} from "../guards/basic-auth-guard.service";
+import {Throttle, ThrottlerGuard} from "@nestjs/throttler";
 
 
 @Controller('auth')
@@ -37,7 +38,7 @@ export class AuthController {
     }
 
     @Get('/me')
-    @UseGuards(authMiddleware)
+    @UseGuards(BearerAuthGuard)
     async getUserCredentials(@UserAll() user: User) {
         console.log(user)
         return {
@@ -47,37 +48,35 @@ export class AuthController {
         }
     }
 
-    @Post('/login')
-    async authLogin(@Res() res: Response, @Req() req: Request, @Ip() ip: string) {
+    @Post('/login')//отдельный юз кейс на каждый запрос
+     @UseGuards(ThrottlerGuard)
+    @HttpCode(200)
+        //@Throttle({default: {ttl: 10000, limit: 5}})
+    async authLogin(@Res({passthrough: true}) res: Response, @Req() req: Request, @Ip() ip: string) {
         const {loginOrEmail, password} = req.body
         console.log('loginOrEmail', loginOrEmail, password)
         const result = await this.authService.login(loginOrEmail, password, ip, req.headers['user-agent'] || 'x') // alt+ enter
         if (!result) return res.sendStatus(401)
-        return res
-            .cookie('refreshToken', result.refreshToken, {httpOnly: true, secure: true})
-            .status(200)
-            .send({accessToken: result.accessToken})
+        res.cookie('refreshToken', result.refreshToken, {httpOnly: true, secure: true})
+
+        return {accessToken: result.accessToken}
     }
 
 
     @Post('/refresh-token')
-    @UseGuards(checkRefreshToken)
+   @UseGuards(AuthSessionTokenGuard)
+
 
     async refreshToken(
         @Res() res: Response,
         @Req() req: Request,
-        @UserId() userId: string
+        @UserAll() user: User
     ) {
+        console.log('in refresh')
         const refreshToken = req.cookies.refreshToken
-        //добавить миддлвару на наличие токена
-        if (!refreshToken) {
-            return res.sendStatus(401)
-        }
-        // Генерация новых токенов на основе переданных данных, например, идентификатора пользователя
-        const user = await this.usersRepository.readUserById(userId)
-        if (!user) return res.sendStatus(401)
+        console.log(refreshToken)
 
-        //const device = await findDeviceById(payload.deviceId)
+        // const device = await findDeviceById(payload.deviceId)
         // if(device.lastActiveDate !== payload.lastActiveDate) return res.sendStatus(401)
         const result = await this.authService.refresh(user, refreshToken)
         if (!result) return res.sendStatus(401)
@@ -89,29 +88,34 @@ export class AuthController {
 
     @Post('/logout')
     @HttpCode(200)
-    @UseGuards(checkRefreshToken)
+    @UseGuards(AuthSessionTokenGuard)
     async authLogout(@Res() res: Response, @Req() req: Request, @DeviceId() deviceId: string) {
-        const refreshToken = req.cookies.refreshToken
+        try {
 
-        //добавить миддлвару на наличие токена
+            const refreshToken = req.cookies.refreshToken
 
-        if (refreshToken) {
-            const lastActiveDate = this.jwtService.lastActiveDate(refreshToken)
-            const device = await this.devicesService.findDeviceById(deviceId!.toString())
-            if (!device) return res.sendStatus(401)
-            if (device.lastActiveDate !== new Date(lastActiveDate)) return res.sendStatus(401)
-            await this.devicesRepository.deleteDevicesById(deviceId!.toString())
-            //достать device из БД и сравнить lastActiveDate из БД и из текущего токена
-            //delete device by deviceId
-            //в чс уже не помещает, выйти с текущего устройства
-            return
-        } else {
-            throw new UnauthorizedException()
+
+            //добавить миддлвару на наличие токена
+
+            if (refreshToken) {
+
+                await this.devicesRepository.deleteDevicesById(deviceId!.toString())
+
+                //достать device из БД и сравнить lastActiveDate из БД и из текущего токена
+                //delete device by deviceId
+                //в чс уже не помещает, выйти с текущего устройства
+                return res.sendStatus(204)
+            } else {
+                throw new UnauthorizedException()
+            }
         }
-
+        catch (err) {
+            console.log(err)}
     }
 
     @Post('/registration')
+    //@Throttle({default: {ttl: 10000, limit: 5}})
+    @UseGuards(ThrottlerGuard)
     @HttpCode(204)
     async registrationUser(@Body() dto: UserCreateModelDto) {
         await this.authService.registrationUser({
@@ -125,6 +129,8 @@ export class AuthController {
     }
 
     @Post('/registration-confirmation')
+    //@Throttle({default: {ttl: 10000, limit: 5}})
+    @UseGuards(ThrottlerGuard)
     @HttpCode(204)
     async confirmRegistration(@Body() codeDto: CodeDto) {
         const isConfirmed = await this.authService.confirmEmail(codeDto.code)
@@ -155,6 +161,8 @@ export class AuthController {
 
     @Post('/registration-email-resending')
     @HttpCode(204)
+    //@Throttle({default: {ttl: 10000, limit: 5}})
+    @UseGuards(ThrottlerGuard)
     async receivedCode(@Body() emailDto: EmailDto) {
         const receivedСode = await this.authService.resendingCode(emailDto.email)
         if (!receivedСode) {
