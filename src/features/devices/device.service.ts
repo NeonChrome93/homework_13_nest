@@ -31,7 +31,8 @@ constructor(private readonly devicesRepository: DevicesRepository) {
     }
 
 
-    async deleteDevicesById(deviceId: string, userId: string): Promise<204 | 403| 404>   {
+    async deleteDevicesById(deviceId: string, userId: string): Promise<204 | 403| 404>
+    {//можно добавить ENUM
         const device = await this.devicesRepository.findDevice(deviceId)
         if (!device) return 404
         if(device.userId !== userId) return 403

@@ -1,14 +1,15 @@
 
 import {ObjectId} from "mongodb";
-import {QueryPaginationType} from "../utils/pagination";
-import {PaginationModels} from "../models/pagination-models";
-import {NewestLikeType, PostViewType} from "../models/posts-models";
+import {QueryPaginationType} from "../../utils/pagination";
+import {PaginationModels} from "../../models/pagination-models";
+import {NewestLikeType, PostViewType} from "../../models/posts-models";
 import {Post, postDbType, PostDocument, StatusType} from "./post.entity";
 import {Injectable} from "@nestjs/common";
 import {InjectModel} from "@nestjs/mongoose";
-import {Model} from "mongoose";
-import {REACTIONS_ENUM} from "../models/comments-models";
-import {likesMapper} from "../utils/mappers/likes-mapper";
+import {FilterQuery, Model} from "mongoose";
+import {REACTIONS_ENUM} from "../../models/comments-models";
+import {likesMapper} from "../../utils/mappers/likes-mapper";
+import {CommentsDBType} from "../comments/comment.entity";
 
 
 @Injectable()
@@ -27,7 +28,7 @@ constructor(@InjectModel(Post.name) private PostModel: Model<PostDocument>) {
 
         const totalCount = await this.PostModel.countDocuments().exec()
 
-        const items: PostViewType[] = posts.map((p:  postDbType) => likesMapper(p, userId))
+        const items: PostViewType[] = posts.map((p: postDbType) => likesMapper(p, userId))
         const pagesCount = Math.ceil(totalCount / pagination.pageSize);
         return {
             pagesCount: pagesCount === 0 ? 1 : pagesCount,

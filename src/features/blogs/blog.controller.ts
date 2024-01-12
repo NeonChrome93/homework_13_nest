@@ -14,11 +14,14 @@ import {
 import {BlogQueryRepository} from "./blog.query.repository";
 import {BlogService} from "./blog.service";
 import {BlogRepository} from "./blog.repository";
-import {getQueryPagination} from "../utils/pagination";
-import {BlogsQueryType, CreateBlogDto, UpdateBlogTypeDto} from "../models/blogs-models";
-import {createPostDto} from "../models/posts-models";
+import {getQueryPagination} from "../../utils/pagination";
+import {BlogsQueryType, CreateBlogDto, UpdateBlogTypeDto} from "../../models/blogs-models";
+import {createPostByBlogIdDto, createPostDto} from "../../models/posts-models";
 import {PostService} from "../posts/post.service";
-import {AuthGuard} from "../guards/auth.guard";
+import {BasicAuthGuard} from "../../guards/basic-auth-guard.service";
+import {IsBlogExist} from "../../common/decorators/blog-exist.decorator";
+import {BearerAuthGuard, SoftBearerAuthGuard} from "../../guards/user-guard";
+import {UserId} from "../../common/decorators/get-user.decorator";
 
 
 
@@ -53,7 +56,7 @@ export class BlogController {
 
     @Post()
     @HttpCode(201)
-    @UseGuards(AuthGuard)
+    @UseGuards(BasicAuthGuard)
     async createBlog(@Body() blogDto: CreateBlogDto) {
         const newBlog = await this.blogService.createBlog(blogDto)
         return newBlog
@@ -61,6 +64,7 @@ export class BlogController {
 
     @Put(':id')
     @HttpCode(204)
+    @UseGuards(BasicAuthGuard)
     async updateBlog(@Param('id') id: string,
                      @Body() blogDto: UpdateBlogTypeDto) {
         let blogUpdate = await this.blogService.updateBlogs(id, blogDto)
@@ -72,14 +76,14 @@ export class BlogController {
 
 
 
-    @Get(':id/posts')
-
-    async getPostByBlogId(@Param('id') blogId: string,
+    @Get(':blogId/posts')
+    @UseGuards(SoftBearerAuthGuard)
+    async getPostByBlogId(@Param('blogId') blogId: string,
                           @Request() req: Request,
-                          @Query() queryDto: BlogsQueryType
-                          // @UserId() userId: string
+                          @Query() queryDto: BlogsQueryType,
+                           @UserId() userId: string
     ) {
-        const userId = null
+
         const pagination = getQueryPagination(queryDto)
         const blog = await this.blogRepository.readBlogsId(blogId)
         if (!blog)  throw new NotFoundException('Blog with this id not found')
@@ -87,15 +91,17 @@ export class BlogController {
        return arr
     }
 
-    @Post(':id/posts')
+    @Post(':blogId/posts')
     @HttpCode(201)
-    async createPostByBlogId(@Param('id') blogId: string,@Body() postDto: createPostDto) {
+    @UseGuards(BasicAuthGuard)
+    async createPostByBlogId(@Param('blogId') blogId: string, @Body() postDto: createPostByBlogIdDto) {
         const post = await this.postService.createPost({...postDto, blogId})
         if (!post)  throw new NotFoundException('Blog with this id not found')
         return post
     }
 
     @Delete(':id')
+    @UseGuards(BasicAuthGuard)
     @HttpCode(204)
     async deleteBlog(@Param('id') id: string) {
 

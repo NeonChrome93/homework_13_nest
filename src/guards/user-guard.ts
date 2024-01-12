@@ -1,13 +1,22 @@
-import {CanActivate, createParamDecorator, ExecutionContext, Injectable, UnauthorizedException} from "@nestjs/common";
-import {UserService} from "../users/user.service";
+import {
+    CanActivate,
+    createParamDecorator,
+    ExecutionContext, ForbiddenException,
+    Injectable,
+    NotFoundException,
+    UnauthorizedException
+} from "@nestjs/common";
+import {UserService} from "../features/users/user.service";
 import * as jwt from 'jsonwebtoken';
 import {JwtAdapter} from "../common/adapters/jwt.adapter";
+import {CommentsQueryRepository} from "../features/comments/comment.query.repository";
+import {log} from "util";
 
 
 
 
 @Injectable()
-export class  authMiddleware implements CanActivate {
+export class BearerAuthGuard implements CanActivate {
   constructor(private readonly userService: UserService,
               private readonly jwtService: JwtAdapter ) {
   }
@@ -15,6 +24,7 @@ export class  authMiddleware implements CanActivate {
   async  canActivate(
         context: ExecutionContext,
     ): Promise<boolean>  {
+
         const request = context.switchToHttp().getRequest();
         if (!request.headers.authorization) {
             throw new UnauthorizedException()
@@ -22,7 +32,7 @@ export class  authMiddleware implements CanActivate {
 
         const token = request.headers.authorization.split(' ')[1];
         const userId = this.jwtService.getUserIdByToken(token)
-        console.log(token)
+        console.log(token,'Auth token')
 
         if (userId) {
             const user = await this.userService.findUserById(userId.toString()).then(user => {
@@ -35,8 +45,9 @@ export class  authMiddleware implements CanActivate {
 
 }
 
+
 @Injectable()
-export class  softAuthMiddleware implements CanActivate {
+export class SoftBearerAuthGuard implements CanActivate {
     constructor(private readonly userService: UserService,
                 private readonly jwtService: JwtAdapter ) {
     }
@@ -47,11 +58,12 @@ export class  softAuthMiddleware implements CanActivate {
         const request = context.switchToHttp().getRequest();
         if (!request.headers.authorization) {
             request.user = null
+            return true
         }
 
         const token = request.headers.authorization.split(' ')[1];
         const userId = this.jwtService.getUserIdByToken(token)
-        console.log(token)
+        console.log(userId)
 
         if (userId) {
             const user = await this.userService.findUserById(userId.toString()).then(user => {

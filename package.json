@@ -18,7 +18,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config test/jest-e2e.json",
-    "serveo": "ssh -R 80:localhost:5000 serveo.net"
+    "serveo": "ssh -R 80:localhost:5000 serveo.net",
+    "ngrok": "ngrok http 5000"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -27,12 +28,16 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/mongoose": "^10.0.2",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/throttler": "^5.1.1",
+    "@types/cookie-parser": "^1.4.6",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "cookie-parser": "^1.4.6",
     "date-fns": "^3.0.6",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.1",
+    "ngrok": "^5.0.0-beta.2",
     "nodemailer": "^6.9.7",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",

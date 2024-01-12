@@ -1,7 +1,7 @@
 
 import {BlogRepository} from "./blog.repository";
 import {Injectable} from "@nestjs/common";
-import {Blog, BlogsViewType, CreateBlogDto, UpdateBlogTypeDto} from "../models/blogs-models";
+import {Blog, BlogsViewType, CreateBlogDto, UpdateBlogTypeDto} from "../../models/blogs-models";
 import {BlogDbType} from "./blog.entity";
 import mongoose from "mongoose";
 

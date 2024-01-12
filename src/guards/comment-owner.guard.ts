@@ -6,9 +6,9 @@ import {
     NotFoundException,
     UnauthorizedException
 } from "@nestjs/common";
-import {UserService} from "../users/user.service";
+import {UserService} from "../features/users/user.service";
 import {JwtAdapter} from "../common/adapters/jwt.adapter";
-import {CommentsQueryRepository} from "../comments/comment.query.repository";
+import {CommentsQueryRepository} from "../features/comments/comment.query.repository";
 import {Request } from 'express'
 
 @Injectable()

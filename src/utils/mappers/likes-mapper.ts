@@ -1,4 +1,4 @@
-import {postDbType, StatusType} from "../../posts/post.entity";
+import {Post, postDbType, StatusType} from "../../features/posts/post.entity";
 import {REACTIONS_ENUM} from "../../models/comments-models";
 import {NewestLikeType} from "../../models/posts-models";
 

@@ -2,15 +2,17 @@
 
 
 import {Injectable} from "@nestjs/common";
-import {createPostDto, PostType, PostViewType, UpdatePostDto} from "../models/posts-models";
+import {createPostDto, PostType, PostViewType, UpdatePostDto} from "../../models/posts-models";
 import {PostRepository} from "./post.repository";
 import {BlogRepository} from "../blogs/blog.repository";
-import {REACTIONS_ENUM} from "../models/comments-models";
+import {REACTIONS_ENUM} from "../../models/comments-models";
+import {UsersRepository} from "../users/user.repository";
 
 @Injectable()
 export class PostService {
     constructor(private readonly postRepository: PostRepository,
-                private readonly blogRepository: BlogRepository) {
+                private readonly blogRepository: BlogRepository,
+                private readonly usersRepository: UsersRepository) {
     }
 
 
@@ -44,14 +46,14 @@ export class PostService {
 
     async addLikesByPost(postId: string, userId: string, status: REACTIONS_ENUM): Promise<boolean> {
         let post = await this.postRepository.readPostId(postId)
-        //let user = await usersRepository.readUserById(userId.toString()) login: user!.login
+        let user = await this.usersRepository.readUserById(userId.toString()) //login: user!.login
 
         if (!post) return false
         const reactions = post.reactions.find(r => r.userId == userId)
 
         if (!reactions) {
 
-            post.reactions.push({ userId, status, createdAt: new Date(), login: 'yaro'})
+            post.reactions.push({ userId, status, createdAt: new Date(), login: user!.login})
             console.log('reaction:',post.reactions[0])
         } else {
             //reactions.userId = userId

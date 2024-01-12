@@ -2,7 +2,7 @@ import {CommentDocument, Comments, CommentsDBType} from "./comment.entity";
 
 import {InjectModel} from "@nestjs/mongoose";
 import {Model } from "mongoose";
-import {UpdateCommentDto} from "../models/comments-models";
+import {UpdateCommentDto} from "../../models/comments-models";
 import {ObjectId} from "mongodb";
 import {Injectable} from "@nestjs/common";
 
@@ -17,7 +17,7 @@ constructor(@InjectModel(Comments.name) private CommentModel: Model<CommentDocum
     }
 
     async createComment(newComment: CommentsDBType): Promise<boolean> {
-
+        console.log(newComment)
         await this.CommentModel.create({...newComment})
         return true
     }

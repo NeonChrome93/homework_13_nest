@@ -1,4 +1,4 @@
-import {CommentsViewType, REACTIONS_ENUM, UpdateCommentDto} from "../models/comments-models";
+import {CommentsViewType, REACTIONS_ENUM, UpdateCommentDto} from "../../models/comments-models";
 import {CommentsDBType} from "./comment.entity";
 import mongoose from "mongoose";
 import {CommentsQueryRepository} from "./comment.query.repository";

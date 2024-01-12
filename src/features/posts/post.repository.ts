@@ -4,8 +4,8 @@ import {Filter, ObjectId} from "mongodb";
 
 import mongoose, {FilterQuery, Model} from "mongoose";
 import {Post, postDbType, PostDocument} from "./post.entity";
-import {PostType, PostViewType, UpdatePostDto} from "../models/posts-models";
-import {REACTIONS_ENUM} from "../models/comments-models";
+import {PostType, PostViewType, UpdatePostDto} from "../../models/posts-models";
+import {REACTIONS_ENUM} from "../../models/comments-models";
 import {Injectable} from "@nestjs/common";
 import {InjectModel} from "@nestjs/mongoose";
 

@@ -1,7 +1,6 @@
 import {Injectable, CanActivate, ExecutionContext, UnauthorizedException, createParamDecorator} from '@nestjs/common';
 import {Observable} from 'rxjs';
-import {UserService} from "../users/user.service";
-import {JwtAdapter} from "../common/adapters/jwt.adapter";
+
 
 const users = {
     login: 'admin',
@@ -27,43 +26,3 @@ export class BasicAuthGuard implements CanActivate {
     }
 }
 
-
-export const DeviceId = createParamDecorator(
-    (data: unknown, context: ExecutionContext) => {
-        const request = context.switchToHttp().getRequest();
-        return request.deviceId;
-    },
-);
-
-
-@Injectable()
-export class checkRefreshToken implements CanActivate {
-    constructor(private readonly jwtService: JwtAdapter,
-                private readonly userService: UserService,) {
-    }
-
-    async canActivate(
-        context: ExecutionContext,
-    ): Promise<boolean> {
-        const request = context.switchToHttp().getRequest();
-        const refreshToken = request.cookies.refreshToken
-        if (!refreshToken) {
-            throw new UnauthorizedException()
-
-        }
-
-        try {
-
-
-            const payload = await this.jwtService.getDeviceIdByToken(refreshToken)
-
-            if (payload.userId && payload.deviceId) {
-                request.user = await this.userService.findUserById(payload.userId.toString())
-                request.deviceId = payload.deviceId
-            }
-        } catch (error) {
-            throw new UnauthorizedException()
-        }
-        return true
-    }
-}

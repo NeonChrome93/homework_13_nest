@@ -1,7 +1,7 @@
 import {ObjectId} from "mongodb";
 import mongoose, {HydratedDocument} from "mongoose";
 import {Prop, Schema, SchemaFactory} from "@nestjs/mongoose";
-import {REACTIONS_ENUM} from "../models/comments-models";
+import {REACTIONS_ENUM} from "../../models/comments-models";
 
 export type CommentsDBType = {
     _id: ObjectId
@@ -37,7 +37,7 @@ class Status {
 
 const statusSchema = SchemaFactory.createForClass(Status);
 
-@Schema()
+@Schema( {_id: false})
 class CommentInfo {
     @Prop( {required: true})
     userId: string

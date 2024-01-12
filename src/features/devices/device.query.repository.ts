@@ -1,4 +1,4 @@
-import {DeviceViewModel} from "../models/devices-models";
+import {DeviceViewModel} from "../../models/devices-models";
 import {InjectModel} from "@nestjs/mongoose";
 import {Device, DeviceDocument} from "./device.entity";
 import {Model} from "mongoose";
@@ -9,7 +9,7 @@ export class DevicesQueryRepository {
 constructor(@InjectModel(Device.name) private DeviceModel: Model<DeviceDocument>) {
 }
     async findAllUserDevices(userId: string): Promise<DeviceViewModel[]> {
-        const device = await this.DeviceModel.find({userId}, {projection: {_id: 0, userId: 0}}).lean()
+        const device = await this.DeviceModel.find({userId}, {_id: 0, userId: 0, __v: 0}).lean()
         return device
     }
 

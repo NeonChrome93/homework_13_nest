@@ -1,9 +1,9 @@
 
 import {FilterQuery, HydratedDocument, Model} from "mongoose";
 import {ObjectId} from "mongodb";
-import {QueryPaginationType} from "../utils/pagination";
+import {QueryPaginationType} from "../../utils/pagination";
 import {CommentDocument, Comments, CommentsDBType} from "./comment.entity";
-import {CommentsViewType, REACTIONS_ENUM} from "../models/comments-models";
+import {CommentsViewType, REACTIONS_ENUM} from "../../models/comments-models";
 import {Injectable} from "@nestjs/common";
 import {InjectModel} from "@nestjs/mongoose";
 

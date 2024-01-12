@@ -12,19 +12,20 @@ import {
     UseGuards
 } from "@nestjs/common";
 import {BearerAuthGuard} from "../guards/user-guard";
-import {User, UserDocument} from "../users/user.entity";
+import {User, UserDocument} from "../features/users/user.entity";
 import e, {Response} from 'express';
 import {Request} from 'express';
 import {AuthService} from "./auth.service";
-import {UsersRepository} from "../users/user.repository";
+import {UsersRepository} from "../features/users/user.repository";
 import {JwtAdapter} from "../common/adapters/jwt.adapter";
 import {UserAll, UserId} from "../common/decorators/get-user.decorator";
-import {DevicesService} from "../devices/device.service";
-import {DevicesQueryRepository} from "../devices/device.query.repository";
-import {DevicesRepository} from "../devices/device.repository";
+import {DevicesService} from "../features/devices/device.service";
+import {DevicesQueryRepository} from "../features/devices/device.query.repository";
+import {DevicesRepository} from "../features/devices/device.repository";
 import {CodeDto, EmailDto,  NewPasswordDto, UserCreateModelDto} from "../models/users-models";
-import {AuthSessionTokenGuard, DeviceId} from "../guards/basic-auth-guard.service";
+import {AuthSessionTokenGuard} from "../guards/auth-session-token.guard";
 import {Throttle, ThrottlerGuard} from "@nestjs/throttler";
+import {DeviceId} from "../common/decorators/get-device.decorator";
 
 
 @Controller('auth')

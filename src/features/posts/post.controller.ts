@@ -8,23 +8,23 @@ import {
     Post, Put,
     Query, UseGuards
 } from "@nestjs/common";
-import {BlogsQueryType} from "../models/blogs-models";
-import {createPostDto, likesDto, PostsQueryType, PostType, UpdatePostDto} from "../models/posts-models";
+import {BlogsQueryType} from "../../models/blogs-models";
+import {createPostDto, likesDto, PostsQueryType, PostType, UpdatePostDto} from "../../models/posts-models";
 import {query} from "express";
-import {getQueryPagination} from "../utils/pagination";
+import {getQueryPagination} from "../../utils/pagination";
 import {PostsQueryRepository} from "./post.query.repository";
 import {BlogQueryRepository} from "../blogs/blog.query.repository";
 import {BlogService} from "../blogs/blog.service";
 import {BlogRepository} from "../blogs/blog.repository";
 import {PostService} from "./post.service";
 import {PostRepository} from "./post.repository";
-import {BearerAuthGuard, SoftBearerAuthGuard} from "../guards/user-guard";
+import {BearerAuthGuard, SoftBearerAuthGuard} from "../../guards/user-guard";
 import {CommentsQueryRepository} from "../comments/comment.query.repository";
-import {UpdateCommentDto, updateLikeDto} from "../models/comments-models";
+import {UpdateCommentDto, updateLikeDto} from "../../models/comments-models";
 import {User} from "../users/user.entity";
 import {CommentService} from "../comments/comment.service";
-import {UserAll, UserId} from "../common/decorators/get-user.decorator";
-import {BasicAuthGuard} from "../guards/basic-auth-guard.service";
+import {UserAll, UserId} from "../../common/decorators/get-user.decorator";
+import {BasicAuthGuard} from "../../guards/basic-auth-guard.service";
 
 
 @Controller('posts')

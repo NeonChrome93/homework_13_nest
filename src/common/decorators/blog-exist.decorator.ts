@@ -5,9 +5,9 @@ import {
     ValidatorConstraintInterface,
     ValidationArguments,
 } from 'class-validator';
-import {UsersRepository} from "../../users/user.repository";
+import {UsersRepository} from "../../features/users/user.repository";
 import {Body, Injectable, ValidationPipe} from "@nestjs/common";
-import {BlogRepository} from "../../blogs/blog.repository";
+import {BlogRepository} from "../../features/blogs/blog.repository";
 import {Param} from "@nestjs/common";
 import {BlogIdDto} from "../../models/blogs-models";
 import {createPostByBlogIdDto} from "../../models/posts-models";

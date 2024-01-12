@@ -5,13 +5,19 @@ import {Injectable} from "@nestjs/common";
 
 @Injectable()
 export class DevicesRepository {
-constructor(@InjectModel(Device.name) private DeviceModel: Model<DeviceDocument>) {
-}
+    constructor(@InjectModel(Device.name) private DeviceModel: Model<DeviceDocument>) {
+    }
 
     async createDevice(device: Device): Promise<Device> {
         //await deviceModel.create(device)
-       return this.DeviceModel.create({...device})
+        return this.DeviceModel.create({...device})
     }
+
+    async isDeviceExistByUserIdAndDeviceId(deviceId: string, userId: string): Promise<boolean> {
+        const result = await this.DeviceModel.findOne({deviceId, userId}).lean()
+        return result !== null
+    }
+
 
     async findDevice(deviceId: string): Promise<Device | null> {
         return this.DeviceModel.findOne({deviceId})
