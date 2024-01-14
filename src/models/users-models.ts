@@ -1,7 +1,9 @@
 import {ObjectId} from "mongoose";
-import {IsUserAlreadyExist} from "../common/decorators/user-exist.decorator";
-import {isEmail, IsEmail, IsNotEmpty, IsString, IsUrl, MaxLength, MinLength} from "class-validator";
+import {IsUserAlreadyExist} from "../infrastructure/decorators/user-exist.decorator";
+import {isEmail, IsEmail, IsNotEmpty, IsString, IsUrl, MaxLength, MinLength, Validate} from "class-validator";
 import {Trim} from "./custom";
+import {IfCodeExist} from "../infrastructure/decorators/registration-conformation.decorator";
+import {IfUserExistOrConfirmed} from "../infrastructure/decorators/registration-email-resending.decorator";
 
 export class UserCreateModelDto {
     @IsUserAlreadyExist({

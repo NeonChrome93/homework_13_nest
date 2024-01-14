@@ -1,20 +1,9 @@
 import {IsMongoId, IsNotEmpty, IsString, IsUrl, IsUUID, MaxLength} from "class-validator";
 import {ObjectId} from "mongodb";
 import {Trim} from "./custom";
-import {IsBlogExist} from "../common/decorators/blog-exist.decorator";
+import {IsBlogExist} from "../infrastructure/decorators/blog-exist.decorator";
 
 
-export class Blog {
-    constructor(
-        public _id: ObjectId,
-        public name: string,
-        public description: string,
-        public websiteUrl: string,
-        public createdAt: string,
-        public isMembership: boolean) {
-
-    }
-}
 
 
 

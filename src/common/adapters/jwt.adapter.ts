@@ -12,13 +12,13 @@ export class JwtAdapter {
 
     createJWT(user: User) {
         //TODO: 10s
-        const token = jwt.sign({userId: user._id}, '123', {expiresIn: '10s'})
+        const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET || '123', {expiresIn: process.env.ACCESS_TIME})
         return token
     }
 
     getUserIdByToken(token: string) {
         try {
-            const result: any = jwt.verify(token,'123' );
+            const result: any = jwt.verify(token, process.env.JWT_SECRET || '123' );
             return result.userId
 
         } catch (error) {
@@ -28,15 +28,15 @@ export class JwtAdapter {
 
     //jwt.decode - можно достать дату выдачи и сохранить в БД + добавить переменную девайс ID
     generateRefreshToken(user: User, deviceId: string) { //deviceId
-        return jwt.sign({userId: user._id, deviceId: deviceId}, '123', {
-            expiresIn: '20s',
+        return jwt.sign({userId: user._id, deviceId: deviceId}, process.env.JWT_SECRET || '123', {
+            expiresIn: process.env.REFRESH_TIME,
         });
 
     }
 
     getDeviceIdByToken(token: string) {
         try {
-            const result: any = jwt.verify(token, '123')
+            const result: any = jwt.verify(token, process.env.JWT_SECRET || '123')
             return result //==={userId: user._id, deviceId: deviceId}
 
 

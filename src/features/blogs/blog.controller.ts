@@ -18,10 +18,10 @@ import {getQueryPagination} from "../../utils/pagination";
 import {BlogsQueryType, CreateBlogDto, UpdateBlogTypeDto} from "../../models/blogs-models";
 import {createPostByBlogIdDto, createPostDto} from "../../models/posts-models";
 import {PostService} from "../posts/post.service";
-import {BasicAuthGuard} from "../../guards/basic-auth-guard.service";
-import {IsBlogExist} from "../../common/decorators/blog-exist.decorator";
-import {BearerAuthGuard, SoftBearerAuthGuard} from "../../guards/user-guard";
-import {UserId} from "../../common/decorators/get-user.decorator";
+import {BasicAuthGuard} from "../../infrastructure/guards/basic-auth-guard.service";
+import {IsBlogExist} from "../../infrastructure/decorators/blog-exist.decorator";
+import {BearerAuthGuard, SoftBearerAuthGuard} from "../../infrastructure/guards/user-guard";
+import {UserId} from "../../infrastructure/decorators/get-user.decorator";
 
 
 

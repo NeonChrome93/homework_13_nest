@@ -15,7 +15,7 @@ import {UserCreateModelDto, UsersQueryType} from "../../models/users-models";
 import {getQueryUserPagination} from "../../utils/pagination";
 import {UsersQueryRepository} from "./user.query.repository";
 import {UserService} from "./user.service";
-import {BasicAuthGuard} from "../../guards/basic-auth-guard.service";
+import {BasicAuthGuard} from "../../infrastructure/guards/basic-auth-guard.service";
 
 
 

@@ -16,6 +16,14 @@ export type BlogDocument = HydratedDocument<Blog>;
 @Schema(({collection: 'blogs'}))
 
 export class Blog {
+    constructor(name:string, description: string, websiteUrl: string, isMembership: boolean) {
+        this._id = new mongoose.Types.ObjectId();
+            this.name = name;
+            this.description = description;
+            this.websiteUrl = websiteUrl;
+            this.createdAt = new Date();
+            this.isMembership = isMembership
+    }
     @Prop({required: true,  type: mongoose.Schema.Types.ObjectId })
     _id: Types.ObjectId
     @Prop()
@@ -27,7 +35,7 @@ export class Blog {
     @Prop({default: new Date})
     createdAt: Date
     @Prop()
-    isMembership: Boolean
+    isMembership: boolean
 
 }
 //читать как сделать агрегацию двух схем

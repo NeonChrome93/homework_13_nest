@@ -2,9 +2,9 @@ import {Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Put, 
 import {UpdateCommentDto, updateLikeDto} from "../../models/comments-models";
 import {CommentsQueryRepository} from "./comment.query.repository";
 import {CommentService} from "./comment.service";
-import {BearerAuthGuard, SoftBearerAuthGuard} from "../../guards/user-guard";
-import {UserId} from "../../common/decorators/get-user.decorator";
-import {CommentOwnerGuard} from "../../guards/comment-owner.guard";
+import {BearerAuthGuard, SoftBearerAuthGuard} from "../../infrastructure/guards/user-guard";
+import {UserId} from "../../infrastructure/decorators/get-user.decorator";
+import {CommentOwnerGuard} from "../../infrastructure/guards/comment-owner.guard";
 
 
 @Controller('comments')

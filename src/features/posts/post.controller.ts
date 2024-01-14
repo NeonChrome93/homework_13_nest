@@ -18,13 +18,13 @@ import {BlogService} from "../blogs/blog.service";
 import {BlogRepository} from "../blogs/blog.repository";
 import {PostService} from "./post.service";
 import {PostRepository} from "./post.repository";
-import {BearerAuthGuard, SoftBearerAuthGuard} from "../../guards/user-guard";
+import {BearerAuthGuard, SoftBearerAuthGuard} from "../../infrastructure/guards/user-guard";
 import {CommentsQueryRepository} from "../comments/comment.query.repository";
 import {UpdateCommentDto, updateLikeDto} from "../../models/comments-models";
 import {User} from "../users/user.entity";
 import {CommentService} from "../comments/comment.service";
-import {UserAll, UserId} from "../../common/decorators/get-user.decorator";
-import {BasicAuthGuard} from "../../guards/basic-auth-guard.service";
+import {UserAll, UserId} from "../../infrastructure/decorators/get-user.decorator";
+import {BasicAuthGuard} from "../../infrastructure/guards/basic-auth-guard.service";
 
 
 @Controller('posts')

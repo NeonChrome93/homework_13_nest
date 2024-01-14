@@ -2,7 +2,7 @@ import {WithId} from "mongodb";
 import {REACTIONS_ENUM} from "./comments-models";
 import {IsEnum, IsNotEmpty, IsString, MaxLength} from "class-validator";
 import {Trim} from "./custom";
-import {IsBlogExist} from "../common/decorators/blog-exist.decorator";
+import {IsBlogExist} from "../infrastructure/decorators/blog-exist.decorator";
 
 
 export type PostType = {

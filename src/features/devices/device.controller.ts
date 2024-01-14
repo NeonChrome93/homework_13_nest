@@ -2,13 +2,13 @@ import {Controller, Delete, Get, HttpCode, Param, Req, Res, UnauthorizedExceptio
 import {Request, Response} from 'express';
 import {JwtAdapter} from "../../common/adapters/jwt.adapter";
 import {DevicesService} from "./device.service";
-import {UserAll, UserId} from "../../common/decorators/get-user.decorator";
+import {UserAll, UserId} from "../../infrastructure/decorators/get-user.decorator";
 import {User} from "../users/user.entity"
 import {DevicesQueryRepository} from "./device.query.repository";
 import {DeviceViewModel} from "../../models/devices-models";
 import {SkipThrottle, Throttle} from "@nestjs/throttler";
-import {AuthSessionTokenGuard} from "../../guards/auth-session-token.guard";
-import {DeviceId} from "../../common/decorators/get-device.decorator";
+import {AuthSessionTokenGuard} from "../../infrastructure/guards/auth-session-token.guard";
+import {DeviceId} from "../../infrastructure/decorators/get-device.decorator";
 
 @Controller('security/devices')
 export class DeviceController {

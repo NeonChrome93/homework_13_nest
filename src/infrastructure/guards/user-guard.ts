@@ -6,10 +6,10 @@ import {
     NotFoundException,
     UnauthorizedException
 } from "@nestjs/common";
-import {UserService} from "../features/users/user.service";
+import {UserService} from "../../features/users/user.service";
 import * as jwt from 'jsonwebtoken';
-import {JwtAdapter} from "../common/adapters/jwt.adapter";
-import {CommentsQueryRepository} from "../features/comments/comment.query.repository";
+import {JwtAdapter} from "../../common/adapters/jwt.adapter";
+import {CommentsQueryRepository} from "../../features/comments/comment.query.repository";
 import {log} from "util";
 
 
