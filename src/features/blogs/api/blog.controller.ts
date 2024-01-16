@@ -11,17 +11,21 @@ import {
     Query,
     Request, UseGuards
 } from "@nestjs/common";
-import {BlogQueryRepository} from "./blog.query.repository";
-import {BlogService} from "./blog.service";
-import {BlogRepository} from "./blog.repository";
-import {getQueryPagination} from "../../utils/pagination";
-import {BlogsQueryType, CreateBlogDto, UpdateBlogTypeDto} from "../../models/blogs-models";
-import {createPostByBlogIdDto, createPostDto} from "../../models/posts-models";
-import {PostService} from "../posts/post.service";
-import {BasicAuthGuard} from "../../infrastructure/guards/basic-auth-guard.service";
-import {IsBlogExist} from "../../infrastructure/decorators/blog-exist.decorator";
-import {BearerAuthGuard, SoftBearerAuthGuard} from "../../infrastructure/guards/user-guard";
-import {UserId} from "../../infrastructure/decorators/get-user.decorator";
+import {BlogQueryRepository} from "../repositories/blog.query.repository";
+import {BlogRepository} from "../repositories/blog.repository";
+import {getQueryPagination} from "../../../utils/pagination";
+
+import {createPostByBlogIdDto, createPostDto} from "../../../models/posts-models";
+import {PostService} from "../../posts/post.service";
+import {BasicAuthGuard} from "../../../infrastructure/guards/basic-auth-guard.service";
+import {IsBlogExist} from "../../../infrastructure/decorators/blog-exist.decorator";
+import {BearerAuthGuard, SoftBearerAuthGuard} from "../../../infrastructure/guards/user-guard";
+import {UserId} from "../../../infrastructure/decorators/get-user.decorator";
+import {BlogsQueryType, CreateBlogDto, UpdateBlogTypeDto} from "./models/input/create-blog.input.model";
+import {CommandBus} from "@nestjs/cqrs";
+import {CreateBlogCommand} from "../application/usecases/create-blog.usecase";
+import {DeleteBlogCommand} from "../application/usecases/delete-blog-usecase";
+import {UpdateBlogCommand} from "../application/usecases/update.blog.usecase";
 
 
 
@@ -32,7 +36,7 @@ import {UserId} from "../../infrastructure/decorators/get-user.decorator";
 @Controller('blogs')
 export class BlogController {
     constructor(private readonly blogQueryRepository: BlogQueryRepository,
-                private readonly blogService: BlogService,
+                private commandBus: CommandBus,
                 private readonly postService: PostService,
                 private readonly blogRepository: BlogRepository,) {
     }
@@ -58,7 +62,7 @@ export class BlogController {
     @HttpCode(201)
     @UseGuards(BasicAuthGuard)
     async createBlog(@Body() blogDto: CreateBlogDto) {
-        const newBlog = await this.blogService.createBlog(blogDto)
+        const newBlog = await this.commandBus.execute(new CreateBlogCommand(blogDto))
         return newBlog
     }
 
@@ -67,7 +71,7 @@ export class BlogController {
     @UseGuards(BasicAuthGuard)
     async updateBlog(@Param('id') id: string,
                      @Body() blogDto: UpdateBlogTypeDto) {
-        let blogUpdate = await this.blogService.updateBlogs(id, blogDto)
+        let blogUpdate = await this.commandBus.execute(new UpdateBlogCommand(id, blogDto))
         if (blogUpdate) {
             return blogUpdate
         } else throw new NotFoundException('Blog with this id not found')
@@ -105,7 +109,7 @@ export class BlogController {
     @HttpCode(204)
     async deleteBlog(@Param('id') id: string) {
 
-        const isDeleted = await this.blogService.deleteBlogs(id)
+        const isDeleted = await this.commandBus.execute(new DeleteBlogCommand(id))
         if (isDeleted) {
             return isDeleted
         } else throw new NotFoundException('Blog with this id not found')

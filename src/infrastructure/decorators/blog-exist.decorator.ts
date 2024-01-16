@@ -5,12 +5,10 @@ import {
     ValidatorConstraintInterface,
     ValidationArguments,
 } from 'class-validator';
-import {UsersRepository} from "../../features/users/user.repository";
 import {Body, Injectable, ValidationPipe} from "@nestjs/common";
-import {BlogRepository} from "../../features/blogs/blog.repository";
+import {BlogRepository} from "../../features/blogs/repositories/blog.repository";
 import {Param} from "@nestjs/common";
-import {BlogIdDto} from "../../models/blogs-models";
-import {createPostByBlogIdDto} from "../../models/posts-models";
+
 
 @Injectable()
 @ValidatorConstraint({ async: true })

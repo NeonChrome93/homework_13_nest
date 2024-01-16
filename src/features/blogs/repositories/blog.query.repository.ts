@@ -1,14 +1,14 @@
 import {FilterQuery, Model} from "mongoose";
-import {ObjectId, WithId} from "mongodb";
+import {ObjectId} from "mongodb";
 import {Injectable} from "@nestjs/common";
-import {QueryPaginationType} from "../../utils/pagination";
-import {BlogsViewType} from "../../models/blogs-models";
-import {Blog, BlogDbType, BlogDocument} from "./blog.entity";
+import {QueryPaginationType} from "../../../utils/pagination";
+import {Blog, BlogDbType, BlogDocument} from "../domain/blog.entity";
 import {InjectModel} from "@nestjs/mongoose";
-import {PaginationModels} from "../../models/pagination-models";
-import {PostType, PostViewType} from "../../models/posts-models";
-import {Post, postDbType, PostDocument} from "../posts/post.entity";
-import {likesMapper} from "../../utils/mappers/likes-mapper";
+import {PaginationModels} from "../../../models/pagination-models";
+import {PostType, PostViewType} from "../../../models/posts-models";
+import {Post, postDbType, PostDocument} from "../../posts/post.entity";
+import {likesMapper} from "../../../utils/mappers/likes-mapper";
+import {BlogsViewType} from "../api/models/output/blog.output.model";
 
 
 

@@ -2,7 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
-import {appSettings} from "../dist/common/config/app.settings";
+import {appSettings} from "../dist/config/app.settings";
+
 
 
 const createBlog = {
@@ -43,12 +44,12 @@ describe('BlogAPI (e2e)', () => {
     app = moduleFixture.createNestApplication();
     appSettings(app)
     await app.init();
-    //server = app.getHttpServer()
+    server = app.getHttpServer()
 
   });
 
   it('deleteAll', async ()=> {
-    await request(app.getHttpServer()).delete('/testing/all-data').expect(204)
+    await request(server).delete('/testing/all-data').expect(204)
   })
   //app.getHttpServer() использовать вместо app
 
