@@ -7,11 +7,11 @@ import {BlogRepository} from "./features/blogs/repositories/blog.repository";
 import {MongooseModule} from "@nestjs/mongoose";
 import {Blog, BlogSchema} from "./features/blogs/domain/blog.entity";
 import {ConfigModule} from '@nestjs/config';
-import {PostController} from "./features/posts/post.controller";
-import {PostsQueryRepository} from "./features/posts/post.query.repository";
-import {Post, PostSchema} from "./features/posts/post.entity";
-import {PostRepository} from "./features/posts/post.repository";
-import {PostService} from "./features/posts/post.service";
+import {PostController} from "./features/posts/api/post.controller";
+import {PostsQueryRepository} from "./features/posts/repositories/post.query.repository";
+import {Post, PostSchema} from "./features/posts/domain/post.entity";
+import {PostRepository} from "./features/posts/repositories/post.repository";
+import {PostService} from "./features/posts/application/post.service";
 import {DelController} from "./testing-all-data/testing.controller";
 import {UserController} from "./features/users/user.controller";
 import {User, UserSchema} from "./features/users/user.entity";
@@ -42,13 +42,17 @@ import {CreateBlogUseCase} from "./features/blogs/application/usecases/create-bl
 import {CqrsModule} from "@nestjs/cqrs";
 import {DeleteBlogUseCase} from "./features/blogs/application/usecases/delete-blog-usecase";
 import {UpdateBlogUseCase} from "./features/blogs/application/usecases/update.blog.usecase";
+import {UpdatePostUseCase} from "./features/posts/application/usecases/update-post.usecase";
+import {AddLikesByPostUseCase} from "./features/posts/application/usecases/add-likes-by-post.usecase";
+import {DeletePostUseCase} from "./features/posts/application/usecases/delete-post.usecase";
+
 
 
 const services = [AppService,PostService, UserService,CommentService,AuthService,DevicesService]
 const repositories = [BlogQueryRepository, BlogRepository,PostsQueryRepository, PostRepository, UsersQueryRepository, UsersRepository, CommentRepository,CommentsQueryRepository, DevicesRepository,DevicesQueryRepository]
 const adapters = [JwtAdapter, EmailAdapter]
 const constraints = [IsUserAlreadyExistConstraint,RegistrationConfirmCodeConstraint,RegistrationEmailResendingConstraint, IsBlogExistConstraint]
-const useCases = [CreateBlogUseCase,DeleteBlogUseCase,UpdateBlogUseCase]
+const useCases = [CreateBlogUseCase,DeleteBlogUseCase,UpdateBlogUseCase,  UpdatePostUseCase, AddLikesByPostUseCase, DeletePostUseCase ]
 
 @Module({
     imports: [
