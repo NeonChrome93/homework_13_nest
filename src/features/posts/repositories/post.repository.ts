@@ -3,11 +3,13 @@
 import {Filter, ObjectId} from "mongodb";
 
 import mongoose, {FilterQuery, Model} from "mongoose";
-import {Post, postDbType, PostDocument} from "./post.entity";
-import {PostType, PostViewType, UpdatePostDto} from "../../models/posts-models";
-import {REACTIONS_ENUM} from "../../models/comments-models";
+import {Post, postDbType, PostDocument} from "../domain/post.entity";
+import {PostType} from "../../../models/posts-models";
+import {REACTIONS_ENUM} from "../../../models/comments-models";
 import {Injectable} from "@nestjs/common";
 import {InjectModel} from "@nestjs/mongoose";
+import {UpdatePostDto} from "../api/models/input";
+import {PostViewType} from "../api/models/output";
 
 @Injectable()
 export class PostRepository {
@@ -25,7 +27,6 @@ constructor(@InjectModel(Post.name) private PostModel: Model<PostDocument>) {
     async createPost(newPost: PostType): Promise<PostViewType> {
 
         const _post = new this.PostModel(newPost)
-        console.log(_post)
         _post._id = new mongoose.Types.ObjectId()
         await _post.save()
         return {

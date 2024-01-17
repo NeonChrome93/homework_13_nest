@@ -1,15 +1,15 @@
 
 import {ObjectId} from "mongodb";
-import {QueryPaginationType} from "../../utils/pagination";
-import {PaginationModels} from "../../models/pagination-models";
-import {NewestLikeType, PostViewType} from "../../models/posts-models";
-import {Post, postDbType, PostDocument, StatusType} from "./post.entity";
+import {QueryPaginationType} from "../../../utils/pagination";
+import {PaginationModels} from "../../../models/pagination-models";
+import {Post, postDbType, PostDocument, StatusType} from "../domain/post.entity";
 import {Injectable} from "@nestjs/common";
 import {InjectModel} from "@nestjs/mongoose";
 import {FilterQuery, Model} from "mongoose";
-import {REACTIONS_ENUM} from "../../models/comments-models";
-import {likesMapper} from "../../utils/mappers/likes-mapper";
-import {CommentsDBType} from "../comments/comment.entity";
+import {REACTIONS_ENUM} from "../../../models/comments-models";
+import {likesMapper} from "../../../utils/mappers/likes-mapper";
+import {CommentsDBType} from "../../comments/comment.entity";
+import {NewestLikeType, PostViewType} from "../api/models/output";
 
 
 @Injectable()

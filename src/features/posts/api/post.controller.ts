@@ -8,29 +8,30 @@ import {
     Post, Put,
     Query, UseGuards
 } from "@nestjs/common";
-import {BlogsQueryType} from "../../models/blogs-models";
-import {createPostDto, likesDto, PostsQueryType, PostType, UpdatePostDto} from "../../models/posts-models";
-import {query} from "express";
-import {getQueryPagination} from "../../utils/pagination";
-import {PostsQueryRepository} from "./post.query.repository";
-import {BlogQueryRepository} from "../blogs/blog.query.repository";
-import {BlogService} from "../blogs/blog.service";
-import {BlogRepository} from "../blogs/blog.repository";
-import {PostService} from "./post.service";
-import {PostRepository} from "./post.repository";
-import {BearerAuthGuard, SoftBearerAuthGuard} from "../../infrastructure/guards/user-guard";
-import {CommentsQueryRepository} from "../comments/comment.query.repository";
-import {UpdateCommentDto, updateLikeDto} from "../../models/comments-models";
-import {User} from "../users/user.entity";
-import {CommentService} from "../comments/comment.service";
-import {UserAll, UserId} from "../../infrastructure/decorators/get-user.decorator";
-import {BasicAuthGuard} from "../../infrastructure/guards/basic-auth-guard.service";
+import {getQueryPagination} from "../../../utils/pagination";
+import {PostsQueryRepository} from "../repositories/post.query.repository";
+import {PostService} from "../application/post.service";
+import {PostRepository} from "../repositories/post.repository";
+import {BearerAuthGuard, SoftBearerAuthGuard} from "../../../infrastructure/guards/user-guard";
+import {CommentsQueryRepository} from "../../comments/comment.query.repository";
+import {UpdateCommentDto, updateLikeDto} from "../../../models/comments-models";
+import {User} from "../../users/user.entity";
+import {CommentService} from "../../comments/comment.service";
+import {UserAll, UserId} from "../../../infrastructure/decorators/get-user.decorator";
+import {BasicAuthGuard} from "../../../infrastructure/guards/basic-auth-guard.service";
+import {CommandBus} from "@nestjs/cqrs";
+import {UpdatePostCommand} from "../application/usecases/update-post.usecase";
+import {DeletePostCommand} from "../application/usecases/delete-blog.usecase";
+import {AddLikesByPostCommand} from "../application/usecases/add-likes-by-post.usecase";
+import {PostsQueryType} from "./models/output";
+import {createPostDto, likesDto, UpdatePostDto} from "./models/input";
 
 
 @Controller('posts')
 export class PostController {
     constructor(private readonly postsQueryRepository: PostsQueryRepository,
                 private readonly postService: PostService,
+                private commandBus: CommandBus,
                 private readonly commentService: CommentService,
                 private readonly postRepository: PostRepository,
                 private readonly commentQueryRepository: CommentsQueryRepository) {
@@ -67,7 +68,7 @@ export class PostController {
     async updatePost(@Param('id') postId: string,
                      @Body() postDto:  UpdatePostDto) {
 
-        let postUpdate = await this.postService.updatePosts(postId,postDto );
+        let postUpdate = await this.commandBus.execute(new UpdatePostCommand(postId,postDto));
         if (postUpdate) {
             return postUpdate
         } else throw new NotFoundException('Post with this id not found')
@@ -78,7 +79,7 @@ export class PostController {
     @UseGuards(BasicAuthGuard)
     async deletePost(@Param('id') postId: string) {
 
-        const isDeleted = await this.postService.deletePosts(postId);
+        const isDeleted = await this.commandBus.execute(new DeletePostCommand(postId));
         if (isDeleted) {
             return isDeleted
         } else throw new NotFoundException('Blog with this id not found');
@@ -116,7 +117,7 @@ export class PostController {
     async updateLikeStatus(@Param('postId') postId: string, @Body() body : likesDto , @UserId() userId: string  ) {
         const post = await this.postRepository.readPostId(postId)
         if(!post) throw new NotFoundException('Post with this id not found')
-        let addLikes = await this.postService.addLikesByPost(postId, userId, body.likeStatus)
+        let addLikes = await this.commandBus.execute(new AddLikesByPostCommand(postId, userId, body.likeStatus))
         if(!addLikes) {
             throw new NotFoundException();
         }

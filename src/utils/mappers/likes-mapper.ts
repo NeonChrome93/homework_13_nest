@@ -1,6 +1,7 @@
-import {Post, postDbType, StatusType} from "../../features/posts/post.entity";
+import {Post, postDbType, StatusType} from "../../features/posts/domain/post.entity";
 import {REACTIONS_ENUM} from "../../models/comments-models";
-import {NewestLikeType} from "../../models/posts-models";
+import {NewestLikeType} from "../../features/posts/api/models/output";
+
 
 
 export function likesMapper(p: postDbType, userId?: string | null) {
