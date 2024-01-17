@@ -21,7 +21,7 @@ import {UserAll, UserId} from "../../../infrastructure/decorators/get-user.decor
 import {BasicAuthGuard} from "../../../infrastructure/guards/basic-auth-guard.service";
 import {CommandBus} from "@nestjs/cqrs";
 import {UpdatePostCommand} from "../application/usecases/update-post.usecase";
-import {DeletePostCommand} from "../application/usecases/delete-blog.usecase";
+import {DeletePostCommand} from "../application/usecases/delete-post.usecase";
 import {AddLikesByPostCommand} from "../application/usecases/add-likes-by-post.usecase";
 import {PostsQueryType} from "./models/output";
 import {createPostDto, likesDto, UpdatePostDto} from "./models/input";

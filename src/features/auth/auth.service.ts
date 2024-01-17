@@ -1,16 +1,16 @@
 import {ObjectId} from "mongodb";
-import { UserCreateModelDto, UserViewModel} from "../models/users-models";
-import {User} from "../features/users/user.entity";
+import { UserCreateModelDto, UserViewModel} from "../../models/users-models";
+import {User} from "../users/user.entity";
 import {randomUUID} from "crypto";
-import {UserService} from "../features/users/user.service";
+import {UserService} from "../users/user.service";
 import {Injectable, UseGuards} from "@nestjs/common";
-import {JwtAdapter} from "../common/adapters/jwt.adapter";
-import {EmailAdapter} from "../common/adapters/email.adapter";
-import {UsersRepository} from "../features/users/user.repository";
+import {JwtAdapter} from "./adapters/jwt.adapter";
+import {EmailAdapter} from "./adapters/email.adapter";
+import {UsersRepository} from "../users/user.repository";
 import {add} from "date-fns"
 import bcrypt from "bcrypt";
-import {DevicesService} from "../features/devices/device.service";
-import {DevicesRepository} from "../features/devices/device.repository";
+import {DevicesService} from "../devices/device.service";
+import {DevicesRepository} from "../devices/device.repository";
 import {ThrottlerGuard} from "@nestjs/throttler";
 
 

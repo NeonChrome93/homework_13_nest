@@ -1,5 +1,5 @@
 import jwt, {JwtPayload} from 'jsonwebtoken'
-import {User} from "../../features/users/user.entity";
+import {User} from "../../users/user.entity";
 import {Injectable} from "@nestjs/common";
 import {JwtService} from "@nestjs/jwt";
 

@@ -11,21 +11,20 @@ import {
     UnauthorizedException,
     UseGuards
 } from "@nestjs/common";
-import {BearerAuthGuard} from "../infrastructure/guards/user-guard";
-import {User, UserDocument} from "../features/users/user.entity";
+import {BearerAuthGuard} from "../../infrastructure/guards/user-guard";
+import {User, UserDocument} from "../users/user.entity";
 import e, {Response} from 'express';
 import {Request} from 'express';
 import {AuthService} from "./auth.service";
-import {UsersRepository} from "../features/users/user.repository";
-import {JwtAdapter} from "../common/adapters/jwt.adapter";
-import {UserAll, UserId} from "../infrastructure/decorators/get-user.decorator";
-import {DevicesService} from "../features/devices/device.service";
-import {DevicesQueryRepository} from "../features/devices/device.query.repository";
-import {DevicesRepository} from "../features/devices/device.repository";
-import {CodeDto, EmailDto,  NewPasswordDto, UserCreateModelDto} from "../models/users-models";
-import {AuthSessionTokenGuard} from "../infrastructure/guards/auth-session-token.guard";
+import {UsersRepository} from "../users/user.repository";
+import {JwtAdapter} from "./adapters/jwt.adapter";
+import {UserAll, UserId} from "../../infrastructure/decorators/get-user.decorator";
+import {DevicesService} from "../devices/device.service";
+import {DevicesRepository} from "../devices/device.repository";
+import {CodeDto, EmailDto,  NewPasswordDto, UserCreateModelDto} from "../../models/users-models";
+import {AuthSessionTokenGuard} from "../../infrastructure/guards/auth-session-token.guard";
 import {Throttle, ThrottlerGuard} from "@nestjs/throttler";
-import {DeviceId} from "../infrastructure/decorators/get-device.decorator";
+import {DeviceId} from "../../infrastructure/decorators/get-device.decorator";
 
 
 @Controller('auth')
@@ -165,8 +164,8 @@ export class AuthController {
     //@Throttle({default: {ttl: 10000, limit: 5}})
     @UseGuards(ThrottlerGuard)
     async receivedCode(@Body() emailDto: EmailDto) {
-        const receivedСode = await this.authService.resendingCode(emailDto.email)
-        if (!receivedСode) {
+        const receivedCode = await this.authService.resendingCode(emailDto.email)
+        if (!receivedCode) {
             throw new BadRequestException()
         } else return
 //юзеру может не прийти код, сгенерировать новый,записать в базу,  переслать код еще раз по емайл новый код

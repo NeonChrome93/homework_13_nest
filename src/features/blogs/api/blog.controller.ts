@@ -14,11 +14,8 @@ import {
 import {BlogQueryRepository} from "../repositories/blog.query.repository";
 import {BlogRepository} from "../repositories/blog.repository";
 import {getQueryPagination} from "../../../utils/pagination";
-
-import {createPostByBlogIdDto, createPostDto} from "../../../models/posts-models";
-import {PostService} from "../../posts/post.service";
+import {PostService} from "../../posts/application/post.service";
 import {BasicAuthGuard} from "../../../infrastructure/guards/basic-auth-guard.service";
-import {IsBlogExist} from "../../../infrastructure/decorators/blog-exist.decorator";
 import {BearerAuthGuard, SoftBearerAuthGuard} from "../../../infrastructure/guards/user-guard";
 import {UserId} from "../../../infrastructure/decorators/get-user.decorator";
 import {BlogsQueryType, CreateBlogDto, UpdateBlogTypeDto} from "./models/input/create-blog.input.model";
@@ -26,6 +23,7 @@ import {CommandBus} from "@nestjs/cqrs";
 import {CreateBlogCommand} from "../application/usecases/create-blog.usecase";
 import {DeleteBlogCommand} from "../application/usecases/delete-blog-usecase";
 import {UpdateBlogCommand} from "../application/usecases/update.blog.usecase";
+import {createPostByBlogIdDto} from "../../posts/api/models/input";
 
 
 

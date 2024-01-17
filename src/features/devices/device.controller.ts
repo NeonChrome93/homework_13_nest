@@ -1,6 +1,6 @@
 import {Controller, Delete, Get, HttpCode, Param, Req, Res, UnauthorizedException, UseGuards} from "@nestjs/common";
 import {Request, Response} from 'express';
-import {JwtAdapter} from "../../common/adapters/jwt.adapter";
+import {JwtAdapter} from "../auth/adapters/jwt.adapter";
 import {DevicesService} from "./device.service";
 import {UserAll, UserId} from "../../infrastructure/decorators/get-user.decorator";
 import {User} from "../users/user.entity"

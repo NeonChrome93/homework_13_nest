@@ -1,9 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import {HttpExceptionFilter} from "./infrastructure/exception-filters/exception-filter";
-import {BadRequestException, ValidationError, ValidationPipe} from "@nestjs/common";
-import { useContainer, Validator } from 'class-validator';
-import {appSettings} from "./common/config/app.settings";
+import {appSettings} from "./config/app.settings";
 
 // do this somewhere in the global application level:
 

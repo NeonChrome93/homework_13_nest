@@ -1,10 +1,7 @@
 
 import {Controller, Delete, HttpCode} from "@nestjs/common";
-import {InjectModel} from "@nestjs/mongoose";
-import {Post, PostDocument} from "../features/posts/post.entity";
-import {Model} from "mongoose";
-import {PostRepository} from "../features/posts/post.repository";
-import {BlogRepository} from "../features/blogs/blog.repository";
+import {PostRepository} from "../features/posts/repositories/post.repository";
+import {BlogRepository} from "../features/blogs/repositories/blog.repository";
 import {UsersRepository} from "../features/users/user.repository";
 
 
