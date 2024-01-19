@@ -2,7 +2,7 @@
 import {Controller, Delete, HttpCode} from "@nestjs/common";
 import {PostRepository} from "../features/posts/repositories/post.repository";
 import {BlogRepository} from "../features/blogs/repositories/blog.repository";
-import {UsersRepository} from "../features/users/user.repository";
+import {UsersRepository} from "../features/users/repositories/user.repository";
 
 
 

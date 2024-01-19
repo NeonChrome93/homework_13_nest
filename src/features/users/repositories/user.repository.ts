@@ -1,5 +1,5 @@
 import {InjectModel} from "@nestjs/mongoose";
-import {User, UserDocument} from "./user.entity";
+import {User, UserDocument} from "../domain/user.entity";
 import {Model} from "mongoose";
 import {Injectable} from "@nestjs/common";
 import {ObjectId} from "mongodb";
