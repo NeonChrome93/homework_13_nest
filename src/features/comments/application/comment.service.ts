@@ -1,9 +1,10 @@
-import {CommentsViewType, REACTIONS_ENUM, UpdateCommentDto} from "../../models/comments-models";
-import {CommentsDBType} from "./comment.entity";
+import {CommentsDBType} from "../domain/comment.entity";
 import mongoose from "mongoose";
-import {CommentsQueryRepository} from "./comment.query.repository";
+import {CommentsQueryRepository} from "../repositories/comment.query.repository";
 import {Injectable} from "@nestjs/common";
-import {CommentRepository} from "./comment.repository";
+import {CommentRepository} from "../repositories/comment.repository";
+import {REACTIONS_ENUM} from "../api/models/output/comments.output.models";
+import {UpdateCommentDto} from "../api/models/input/comment.input.model";
 
 
 @Injectable()
@@ -13,31 +14,7 @@ export class CommentService {
     }
 
 
-    async createComment(postId: string, userId: string, userLogin: string, content: string): Promise<CommentsViewType> {
-        const newComment: CommentsDBType = {
-            _id: new mongoose.Types.ObjectId(),
-            postId,
-            content,
-            commentatorInfo: {
-                userId,
-                userLogin
-            },
-            createdAt: new Date(),
-            reactions: []
-        }
-        await this.commentRepository.createComment(newComment)
-        return {
-            id: newComment._id.toString(),
-            content,
-            commentatorInfo: newComment.commentatorInfo,
-            createdAt: newComment.createdAt.toISOString(),
-            likesInfo: {
-                likesCount: 0,
-                dislikesCount: 0,
-                myStatus: REACTIONS_ENUM.None
-            }
-        }
-    }
+
 
     async addReaction(commentId: string, userId: string, status: REACTIONS_ENUM): Promise<boolean> {
         let comment = await this.commentRepository.readCommentIdDbType(commentId)

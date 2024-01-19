@@ -1,7 +1,8 @@
 import {ObjectId} from "mongodb";
 import mongoose, {HydratedDocument} from "mongoose";
 import {Prop, Schema, SchemaFactory} from "@nestjs/mongoose";
-import {REACTIONS_ENUM} from "../../models/comments-models";
+import {REACTIONS_ENUM} from "../api/models/output/comments.output.models";
+
 
 export type CommentsDBType = {
     _id: ObjectId

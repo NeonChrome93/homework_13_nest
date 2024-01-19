@@ -1,10 +1,10 @@
 import {Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Put, Req, UseGuards} from "@nestjs/common";
-import {UpdateCommentDto, updateLikeDto} from "../../models/comments-models";
-import {CommentsQueryRepository} from "./comment.query.repository";
-import {CommentService} from "./comment.service";
-import {BearerAuthGuard, SoftBearerAuthGuard} from "../../infrastructure/guards/user-guard";
-import {UserId} from "../../infrastructure/decorators/get-user.decorator";
-import {CommentOwnerGuard} from "../../infrastructure/guards/comment-owner.guard";
+import {CommentsQueryRepository} from "../repositories/comment.query.repository";
+import {CommentService} from "../application/comment.service";
+import {BearerAuthGuard, SoftBearerAuthGuard} from "../../../infrastructure/guards/user-guard";
+import {UserId} from "../../../infrastructure/decorators/get-user.decorator";
+import {CommentOwnerGuard} from "../../../infrastructure/guards/comment-owner.guard";
+import {UpdateCommentDto, updateLikeDto} from "./models/input/comment.input.model";
 
 
 @Controller('comments')

@@ -1,6 +1,6 @@
 import {Post, postDbType, StatusType} from "../../features/posts/domain/post.entity";
-import {REACTIONS_ENUM} from "../../models/comments-models";
 import {NewestLikeType} from "../../features/posts/api/models/output";
+import {REACTIONS_ENUM} from "../../features/comments/api/models/output/comments.output.models";
 
 
 

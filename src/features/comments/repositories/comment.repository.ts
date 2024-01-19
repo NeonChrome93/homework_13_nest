@@ -1,10 +1,10 @@
-import {CommentDocument, Comments, CommentsDBType} from "./comment.entity";
+import {CommentDocument, Comments, CommentsDBType} from "../domain/comment.entity";
 
 import {InjectModel} from "@nestjs/mongoose";
 import {Model } from "mongoose";
-import {UpdateCommentDto} from "../../models/comments-models";
 import {ObjectId} from "mongodb";
 import {Injectable} from "@nestjs/common";
+import {UpdateCommentDto} from "../api/models/input/comment.input.model";
 
 @Injectable()
 export class CommentRepository  {
