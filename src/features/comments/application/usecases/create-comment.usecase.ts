@@ -17,7 +17,6 @@ export class CreateCommentUseCase implements ICommandHandler<CreateCommentComman
     async execute(command:CreateCommentCommand): Promise<CommentsViewType> {
             const {postId, userId, userLogin, content} = command
         const newComment: CommentsDBType = {
-
             _id: new mongoose.Types.ObjectId(),
             postId,
             content,
