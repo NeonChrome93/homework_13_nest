@@ -1,20 +1,23 @@
 import {Controller, Delete, Get, HttpCode, Param, Req, Res, UnauthorizedException, UseGuards} from "@nestjs/common";
 import {Request, Response} from 'express';
-import {JwtAdapter} from "../auth/adapters/jwt.adapter";
-import {DevicesService} from "./device.service";
-import {UserAll, UserId} from "../../infrastructure/decorators/get-user.decorator";
-import {User} from "../users/user.entity"
-import {DevicesQueryRepository} from "./device.query.repository";
-import {DeviceViewModel} from "../../models/devices-models";
+import {JwtAdapter} from "../../auth/adapters/jwt.adapter";
+import {DevicesService} from "../application/device.service";
+import {UserAll, UserId} from "../../../infrastructure/decorators/get-user.decorator";
+import {User} from "../../users/domain/user.entity"
+import {DevicesQueryRepository} from "../repositories/device.query.repository";
 import {SkipThrottle, Throttle} from "@nestjs/throttler";
-import {AuthSessionTokenGuard} from "../../infrastructure/guards/auth-session-token.guard";
-import {DeviceId} from "../../infrastructure/decorators/get-device.decorator";
+import {AuthSessionTokenGuard} from "../../../infrastructure/guards/auth-session-token.guard";
+import {DeviceId} from "../../../infrastructure/decorators/get-device.decorator";
+import {CommandBus} from "@nestjs/cqrs";
+import {DeleteDeviceCommand, DeleteDeviceUseCase} from "../application/usecases/delete-device.usecase";
+import {DeviceViewModel} from "./models/output";
 
 @Controller('security/devices')
 export class DeviceController {
     constructor(private readonly jwtService: JwtAdapter,
                 private readonly devicesService: DevicesService,
-                private readonly devicesQueryRepository: DevicesQueryRepository) {
+                private readonly devicesQueryRepository: DevicesQueryRepository,
+                private readonly commandBus: CommandBus) {
     }
 
     @Get()
@@ -39,7 +42,7 @@ export class DeviceController {
     @UseGuards(AuthSessionTokenGuard)
     //@HttpCode(204)
     async deleteDeviceById(@Param('deviceId') deviceId: string, @UserAll() user: User, @Res() res: Response) {
-        const status = await this.devicesService.deleteDevicesById(deviceId, user!._id.toString())
+        const status = await this.commandBus.execute(new DeleteDeviceCommand(deviceId, user!._id.toString()))
         return res.sendStatus(status)
 
 

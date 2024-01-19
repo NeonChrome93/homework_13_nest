@@ -1,5 +1,3 @@
-
-
 export type DeviceViewModel = {
     ip: string,
     deviceId: string ,
