@@ -9,22 +9,24 @@ import {
     Req,
     Res,
     UnauthorizedException,
-    UseGuards
+    UseGuards,
+    Headers
 } from "@nestjs/common";
 import {BearerAuthGuard} from "../../infrastructure/guards/user-guard";
-import {User, UserDocument} from "../users/user.entity";
+import {User, UserDocument} from "../users/domain/user.entity";
 import e, {Response} from 'express';
 import {Request} from 'express';
 import {AuthService} from "./auth.service";
-import {UsersRepository} from "../users/user.repository";
+import {UsersRepository} from "../users/repositories/user.repository";
 import {JwtAdapter} from "./adapters/jwt.adapter";
 import {UserAll, UserId} from "../../infrastructure/decorators/get-user.decorator";
-import {DevicesService} from "../devices/device.service";
-import {DevicesRepository} from "../devices/device.repository";
+import {DevicesService} from "../devices/application/device.service";
+import {DevicesRepository} from "../devices/repositories/device.repository";
 import {CodeDto, EmailDto,  NewPasswordDto, UserCreateModelDto} from "../../models/users-models";
 import {AuthSessionTokenGuard} from "../../infrastructure/guards/auth-session-token.guard";
 import {Throttle, ThrottlerGuard} from "@nestjs/throttler";
 import {DeviceId} from "../../infrastructure/decorators/get-device.decorator";
+import {LocalAuthGuard} from "../../infrastructure/guards/auth-local.guard";
 
 
 @Controller('auth')
@@ -49,13 +51,15 @@ export class AuthController {
     }
 
     @Post('/login')//отдельный юз кейс на каждый запрос
-     @UseGuards(ThrottlerGuard)
+     @UseGuards(ThrottlerGuard, LocalAuthGuard)
     @HttpCode(200)
         //@Throttle({default: {ttl: 10000, limit: 5}})
-    async authLogin(@Res({passthrough: true}) res: Response, @Req() req: Request, @Ip() ip: string) {
-        const {loginOrEmail, password} = req.body
-        console.log('loginOrEmail', loginOrEmail, password)
-        const result = await this.authService.login(loginOrEmail, password, ip, req.headers['user-agent'] || 'x') // alt+ enter
+    async authLogin(@Res({passthrough: true}) res: Response, @UserAll() user: User, @Ip() ip: string, @Headers('user-agent') title: string) {
+       // const {loginOrEmail, password} = req.body
+
+        console.log(title)
+        console.log('loginOrEmail')
+        const result = await this.authService.login( ip, title || 'x', user) // alt+ enter
         if (!result) return res.sendStatus(401)
         res.cookie('refreshToken', result.refreshToken, {httpOnly: true, secure: true})
 
