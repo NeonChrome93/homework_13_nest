@@ -1,17 +1,20 @@
 import {ObjectId} from "mongodb";
-import { UserCreateModelDto, UserViewModel} from "../../models/users-models";
-import {User} from "../users/user.entity";
+import {User} from "../../users/domain/user.entity";
 import {randomUUID} from "crypto";
-import {UserService} from "../users/user.service";
+import {UserService} from "../../users/application/user.service";
 import {Injectable, UseGuards} from "@nestjs/common";
-import {JwtAdapter} from "./adapters/jwt.adapter";
-import {EmailAdapter} from "./adapters/email.adapter";
-import {UsersRepository} from "../users/user.repository";
+import {JwtAdapter} from "../adapters/jwt.adapter";
+import {EmailAdapter} from "../adapters/email.adapter";
+import {UsersRepository} from "../../users/repositories/user.repository";
 import {add} from "date-fns"
 import bcrypt from "bcrypt";
-import {DevicesService} from "../devices/device.service";
-import {DevicesRepository} from "../devices/device.repository";
+import {DevicesService} from "../../devices/application/device.service";
+import {DevicesRepository} from "../../devices/repositories/device.repository";
 import {ThrottlerGuard} from "@nestjs/throttler";
+import {UserCreateModelDto} from "../../users/api/models/input/user.input.model";
+import {UserViewModel} from "../../users/api/models/output/user.output.model";
+import {CommandBus} from "@nestjs/cqrs";
+import {CreateDeviceCommand, CreateDeviceUseCase} from "../../devices/application/usecases/create-device.usecase";
 
 
 @Injectable()
@@ -21,39 +24,12 @@ export class AuthService  {
                 private readonly emailService: EmailAdapter,
                 private readonly deviceService: DevicesService,
                 private readonly deviceRepository: DevicesRepository,
-                private readonly usersRepository: UsersRepository) {
+                private readonly usersRepository: UsersRepository,
+                private readonly commandBus: CommandBus) {
     }
 
-    async registrationUser(userCreateModel: UserCreateModelDto ): Promise<UserViewModel> {
-        const passwordSalt = await bcrypt.genSalt(10);
-        const passwordHash = await bcrypt.hash(userCreateModel.password, passwordSalt)
 
-        const newUser: User = {
-            _id: new ObjectId(),
-            login: userCreateModel.login, //valitation not copy in database
-            email: userCreateModel.email, //
-            passwordHash: passwordHash,
-            passwordSalt: passwordSalt,
-            createdAt: new Date(),
-            confirmationCode: randomUUID(), //generate code UUID //
-            isConfirmed: false, // by registration
-            expirationDateOfRecoveryCode: null,
-            passwordRecoveryCode: null
-        }
-        await this.usersRepository.createUser(newUser);
-        try {
-            this.emailService.sendEmail(newUser.email, newUser.confirmationCode, 'It is your code')
-        } catch (e) {
-            console.log('registration user email error', e);
-        }
-        return {
-            id: newUser._id.toString(),
-            login: newUser.login,
-            email: newUser.email,
-            createdAt: newUser.createdAt.toISOString()
-        }
-    }
-//подтверждение email
+    //подтверждение email
     async confirmEmail(code: string) {
         const user = await this.usersRepository.readUserByCode(code)
         if (!user) return false;
@@ -116,15 +92,15 @@ export class AuthService  {
     }
 
 
-    async login(loginOrEmail: string, password: string, ip: string, title: string): Promise<{ accessToken: string, refreshToken: string } | null> {
-        const user = await this.userService.checkCredentials(loginOrEmail, password)
-        console.log('user', user)
-        if (!user) return null
+    async login( ip: string, title: string, user: User): Promise<{ accessToken: string, refreshToken: string } | null> {
+        //const user = await this.userService.checkCredentials(loginOrEmail, password)
+        console.log('service', user)
+       // if (!user) return null
         const accessToken = this.jwtService.createJWT(user);
         const deviceId = randomUUID()
         const refreshToken = this.jwtService.generateRefreshToken(user, deviceId);
         const lastActiveDate = this.jwtService.lastActiveDate(refreshToken)// взять дату выписки этого токена === lastActiveDate у девайся
-        await this.deviceService.createDevice(ip, deviceId, user._id.toString(), title, new Date(lastActiveDate))
+        await this.commandBus.execute(new CreateDeviceCommand(ip, deviceId, user._id.toString(), title, new Date(lastActiveDate)))
         return {
             accessToken,
             refreshToken

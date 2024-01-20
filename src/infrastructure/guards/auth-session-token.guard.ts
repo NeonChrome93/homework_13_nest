@@ -1,8 +1,8 @@
 import {CanActivate, ExecutionContext, Injectable, UnauthorizedException} from "@nestjs/common";
 import {JwtAdapter} from "../../features/auth/adapters/jwt.adapter";
-import {UserService} from "../../features/users/user.service";
-import {DevicesService} from "../../features/devices/device.service";
-import {DevicesRepository} from "../../features/devices/device.repository";
+import {UserService} from "../../features/users/application/user.service";
+import {DevicesService} from "../../features/devices/application/device.service";
+import {DevicesRepository} from "../../features/devices/repositories/device.repository";
 
 @Injectable()
 export class AuthSessionTokenGuard implements CanActivate {

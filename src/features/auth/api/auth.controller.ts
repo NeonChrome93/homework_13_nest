@@ -12,21 +12,24 @@ import {
     UseGuards,
     Headers
 } from "@nestjs/common";
-import {BearerAuthGuard} from "../../infrastructure/guards/user-guard";
-import {User, UserDocument} from "../users/domain/user.entity";
+import {BearerAuthGuard} from "../../../infrastructure/guards/user-guard";
+import {User, UserDocument} from "../../users/domain/user.entity";
 import e, {Response} from 'express';
 import {Request} from 'express';
-import {AuthService} from "./auth.service";
-import {UsersRepository} from "../users/repositories/user.repository";
-import {JwtAdapter} from "./adapters/jwt.adapter";
-import {UserAll, UserId} from "../../infrastructure/decorators/get-user.decorator";
-import {DevicesService} from "../devices/application/device.service";
-import {DevicesRepository} from "../devices/repositories/device.repository";
-import {CodeDto, EmailDto,  NewPasswordDto, UserCreateModelDto} from "../../models/users-models";
-import {AuthSessionTokenGuard} from "../../infrastructure/guards/auth-session-token.guard";
+import {AuthService} from "../application/auth.service";
+import {UsersRepository} from "../../users/repositories/user.repository";
+import {JwtAdapter} from "../adapters/jwt.adapter";
+import {UserAll, UserId} from "../../../infrastructure/decorators/get-user.decorator";
+import {DevicesService} from "../../devices/application/device.service";
+import {DevicesRepository} from "../../devices/repositories/device.repository";
+import {AuthSessionTokenGuard} from "../../../infrastructure/guards/auth-session-token.guard";
 import {Throttle, ThrottlerGuard} from "@nestjs/throttler";
-import {DeviceId} from "../../infrastructure/decorators/get-device.decorator";
-import {LocalAuthGuard} from "../../infrastructure/guards/auth-local.guard";
+import {DeviceId} from "../../../infrastructure/decorators/get-device.decorator";
+import {LocalAuthGuard} from "../../../infrastructure/guards/auth-local.guard";
+import {UserCreateModelDto} from "../../users/api/models/input/user.input.model";
+import {CommandBus} from "@nestjs/cqrs";
+import {RegistrationUserCommand} from "../application/usecases/registration-user.usecase";
+import {CodeDto, EmailDto, NewPasswordDto} from "./models/auth-input.models";
 
 
 @Controller('auth')
@@ -36,7 +39,8 @@ export class AuthController {
                 private readonly jwtService: JwtAdapter,
                 private readonly usersRepository: UsersRepository,
                 private readonly devicesService: DevicesService,
-                private readonly devicesRepository: DevicesRepository) {
+                private readonly devicesRepository: DevicesRepository,
+                private readonly commandBus: CommandBus) {
     }
 
     @Get('/me')
@@ -97,14 +101,9 @@ export class AuthController {
         try {
 
             const refreshToken = req.cookies.refreshToken
-
-
             //добавить миддлвару на наличие токена
-
             if (refreshToken) {
-
                 await this.devicesRepository.deleteDevicesById(deviceId!.toString())
-
                 //достать device из БД и сравнить lastActiveDate из БД и из текущего токена
                 //delete device by deviceId
                 //в чс уже не помещает, выйти с текущего устройства
@@ -122,12 +121,12 @@ export class AuthController {
     @UseGuards(ThrottlerGuard)
     @HttpCode(204)
     async registrationUser(@Body() dto: UserCreateModelDto) {
-        await this.authService.registrationUser({
+        await this.commandBus.execute(new RegistrationUserCommand({
             login: dto.login,
             email: dto.email,
             password: dto.password,
             //message: req.body.message
-        })
+        }))
         return
 
     }
