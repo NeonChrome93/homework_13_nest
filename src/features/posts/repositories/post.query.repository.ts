@@ -6,10 +6,10 @@ import {Post, postDbType, PostDocument, StatusType} from "../domain/post.entity"
 import {Injectable} from "@nestjs/common";
 import {InjectModel} from "@nestjs/mongoose";
 import {FilterQuery, Model} from "mongoose";
-import {REACTIONS_ENUM} from "../../../models/comments-models";
 import {likesMapper} from "../../../utils/mappers/likes-mapper";
-import {CommentsDBType} from "../../comments/comment.entity";
-import {NewestLikeType, PostViewType} from "../api/models/output";
+import {CommentsDBType} from "../../comments/domain/comment.entity";
+import {NewestLikeType, PostViewType} from "../api/models/output/post-output.model";
+import {REACTIONS_ENUM} from "../../comments/api/models/output/comments.output.models";
 
 
 @Injectable()

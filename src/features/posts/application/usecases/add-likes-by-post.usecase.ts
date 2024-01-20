@@ -1,8 +1,8 @@
 import {CommandHandler, ICommandHandler} from "@nestjs/cqrs";
-import {REACTIONS_ENUM} from "../../../../models/comments-models";
 import {PostRepository} from "../../repositories/post.repository";
 import {BlogRepository} from "../../../blogs/repositories/blog.repository";
-import {UsersRepository} from "../../../users/user.repository";
+import {UsersRepository} from "../../../users/repositories/user.repository";
+import {REACTIONS_ENUM} from "../../../comments/api/models/output/comments.output.models";
 
 export class AddLikesByPostCommand {
     constructor(public postId: string, public userId: string, public status: REACTIONS_ENUM) {

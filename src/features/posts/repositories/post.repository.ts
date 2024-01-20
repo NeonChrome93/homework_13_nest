@@ -4,12 +4,11 @@ import {Filter, ObjectId} from "mongodb";
 
 import mongoose, {FilterQuery, Model} from "mongoose";
 import {Post, postDbType, PostDocument} from "../domain/post.entity";
-import {PostType} from "../../../models/posts-models";
-import {REACTIONS_ENUM} from "../../../models/comments-models";
 import {Injectable} from "@nestjs/common";
 import {InjectModel} from "@nestjs/mongoose";
-import {UpdatePostDto} from "../api/models/input";
-import {PostViewType} from "../api/models/output";
+import {PostType, UpdatePostDto} from "../api/models/input/post-input.model";
+import {PostViewType} from "../api/models/output/post-output.model";
+import {REACTIONS_ENUM} from "../../comments/api/models/output/comments.output.models";
 
 @Injectable()
 export class PostRepository {

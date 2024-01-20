@@ -12,7 +12,7 @@ import {
     UseGuards,
     Headers
 } from "@nestjs/common";
-import {BearerAuthGuard} from "../../../infrastructure/guards/user-guard";
+import {BearerAuthGuard} from "../../../infrastructure/guards/user.guard";
 import {User, UserDocument} from "../../users/domain/user.entity";
 import e, {Response} from 'express';
 import {Request} from 'express';
@@ -30,6 +30,11 @@ import {UserCreateModelDto} from "../../users/api/models/input/user.input.model"
 import {CommandBus} from "@nestjs/cqrs";
 import {RegistrationUserCommand} from "../application/usecases/registration-user.usecase";
 import {CodeDto, EmailDto, NewPasswordDto} from "./models/auth-input.models";
+import {PasswordRecoveryCommand} from "../application/usecases/password-recovery.usecase";
+import {NewPasswordSetCommand} from "../application/usecases/new-password-set.usecase";
+import {ResendingCodeCommand} from "../application/usecases/resending-code.usecase";
+import {ConfirmEmailCommand} from "../application/usecases/confirm-email.usecase";
+import {AuthLoginCommand} from "../application/usecases/auth-login.usecase";
 
 
 @Controller('auth')
@@ -63,7 +68,7 @@ export class AuthController {
 
         console.log(title)
         console.log('loginOrEmail')
-        const result = await this.authService.login( ip, title || 'x', user) // alt+ enter
+        const result = await this.commandBus.execute(new AuthLoginCommand( ip, title || 'x', user)); // alt+ enter
         if (!result) return res.sendStatus(401)
         res.cookie('refreshToken', result.refreshToken, {httpOnly: true, secure: true})
 
@@ -136,7 +141,7 @@ export class AuthController {
     @UseGuards(ThrottlerGuard)
     @HttpCode(204)
     async confirmRegistration(@Body() codeDto: CodeDto) {
-        const isConfirmed = await this.authService.confirmEmail(codeDto.code)
+        const isConfirmed = await this.commandBus.execute(new ConfirmEmailCommand(codeDto.code));
         if (!isConfirmed) throw new BadRequestException()
         return isConfirmed
     }
@@ -144,14 +149,14 @@ export class AuthController {
     @Post('/password-recovery')
     @HttpCode(204)
     async passwordRecovery(@Body() emailDto: EmailDto) {
-        const result = await this.authService.passwordRecovery(emailDto.email)
+        const result = await this.commandBus.execute(new PasswordRecoveryCommand(emailDto.email));
         return result
     }
 
     @Post('/new-password')
     @HttpCode(204)
     async newPassword(@Body() newPasswordDto: NewPasswordDto) {
-        const result = await this.authService.newPasswordSet(newPasswordDto.newPassword, newPasswordDto.recoveryCode)
+        const result = await this.commandBus.execute(new NewPasswordSetCommand(newPasswordDto.newPassword, newPasswordDto.recoveryCode));
         //0. валидация req.body
         //1. найти юзера по recoveryCode(если юзера нет в бд, кинуть ошибку)
         //2. поменять пароль юзера на новый
@@ -167,7 +172,7 @@ export class AuthController {
     //@Throttle({default: {ttl: 10000, limit: 5}})
     @UseGuards(ThrottlerGuard)
     async receivedCode(@Body() emailDto: EmailDto) {
-        const receivedCode = await this.authService.resendingCode(emailDto.email)
+        const receivedCode = await this.commandBus.execute(new ResendingCodeCommand(emailDto.email));
         if (!receivedCode) {
             throw new BadRequestException()
         } else return

@@ -1,6 +1,6 @@
-import {REACTIONS_ENUM} from "../../../../models/comments-models";
 import {WithId} from "mongodb";
-import {PostType} from "../../../../models/posts-models";
+import {REACTIONS_ENUM} from "../../../../comments/api/models/output/comments.output.models";
+
 
 export type PostsQueryType = {
     pageNumber: string,
@@ -35,4 +35,3 @@ export class PostViewType {
     }
 }
 
-export type mongoTypePost = WithId<PostType>

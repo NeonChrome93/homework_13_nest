@@ -3,7 +3,7 @@ import {InjectModel} from "@nestjs/mongoose";
 import {Device, DeviceDocument} from "../domain/device.entity";
 import {Model} from "mongoose";
 import {Injectable} from "@nestjs/common";
-import {DeviceViewModel} from "../api/models/output";
+import {DeviceViewModel} from "../api/models/output/device-output.model";
 
 @Injectable()
 export class DevicesQueryRepository {

@@ -10,7 +10,7 @@ import {AuthSessionTokenGuard} from "../../../infrastructure/guards/auth-session
 import {DeviceId} from "../../../infrastructure/decorators/get-device.decorator";
 import {CommandBus} from "@nestjs/cqrs";
 import {DeleteDeviceCommand, DeleteDeviceUseCase} from "../application/usecases/delete-device.usecase";
-import {DeviceViewModel} from "./models/output";
+import {DeviceViewModel} from "./models/output/device-output.model";
 
 @Controller('security/devices')
 export class DeviceController {

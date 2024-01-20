@@ -1,11 +1,11 @@
 import {QueryUserPaginationType} from "../../../utils/pagination";
-import {UserViewModel} from "../../../models/users-models";
 import {PaginationModels} from "../../../models/pagination-models";
 import e from "express";
 import {Injectable} from "@nestjs/common";
 import {InjectModel} from "@nestjs/mongoose";
 import {User, UserDocument} from "../domain/user.entity";
 import {Model} from "mongoose";
+import {UserViewModel} from "../api/models/output/user.output.model";
 
 @Injectable()
 export class UsersQueryRepository {

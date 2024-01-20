@@ -1,10 +1,9 @@
 import {Injectable} from "@nestjs/common";
-import { PostType} from "../../../models/posts-models";
 import {PostRepository} from "../repositories/post.repository";
 import {BlogRepository} from "../../blogs/repositories/blog.repository";
-import {UsersRepository} from "../../users/user.repository";
-import {createPostDto} from "../api/models/input";
-import {PostViewType} from "../api/models/output";
+import {UsersRepository} from "../../users/repositories/user.repository";
+import {createPostDto, PostType} from "../api/models/input/post-input.model";
+import {PostViewType} from "../api/models/output/post-output.model";
 
 @Injectable()
 export class PostService {
@@ -12,7 +11,6 @@ export class PostService {
                 private readonly blogRepository: BlogRepository,
                 private readonly usersRepository: UsersRepository) {
     }
-
 
     // async readPosts(pagination: QueryPaginationType): Promise<PaginationModels<PostOutputType[]>> {
     //     return postRepository.readPosts(pagination)

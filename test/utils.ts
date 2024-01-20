@@ -1,6 +1,6 @@
 import request from "supertest";
-import {UserCreateModelDto, UserViewModel} from "../src/models/users-models";
 import {INestApplication} from "@nestjs/common";
+import {UserViewModel} from "../src/features/users/api/models/output/user.output.model";
 
 const authBasicHeaders = {
   "Authorization": "Basic YWRtaW46cXdlcnR5",

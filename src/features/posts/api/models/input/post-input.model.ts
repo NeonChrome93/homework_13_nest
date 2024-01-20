@@ -1,7 +1,8 @@
 import {IsEnum, IsNotEmpty, IsString, MaxLength} from "class-validator";
-import {Trim} from "../../../../models/custom";
-import {IsBlogExist} from "../../../../infrastructure/decorators/blog-exist.decorator";
-import {REACTIONS_ENUM} from "../../../../models/comments-models";
+import {Trim} from "../../../../../models/custom";
+import {IsBlogExist} from "../../../../../infrastructure/decorators/blog-exist.decorator";
+import {REACTIONS_ENUM} from "../../../../comments/api/models/output/comments.output.models";
+
 
 export class createPostDto {
 
@@ -78,4 +79,15 @@ export class UpdatePostDto {
 export class likesDto {
     @IsEnum(REACTIONS_ENUM)
     likeStatus: REACTIONS_ENUM
+}
+
+export type PostType = {
+
+    "title": string,
+    "shortDescription": string,
+    "content": string,
+    "blogId": string,
+    "blogName": string,
+    "createdAt": string
+    // reactions: []
 }

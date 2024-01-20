@@ -1,9 +1,10 @@
 import {CommandHandler, ICommandHandler} from "@nestjs/cqrs";
-import {UserCreateModelDto, UserViewModel} from "../../../../models/users-models";
 import bcrypt from "bcrypt";
 import {User} from "../../domain/user.entity";
 import mongoose from "mongoose";
 import {UsersRepository} from "../../repositories/user.repository";
+import {UserViewModel} from "../../api/models/output/user.output.model";
+import {UserCreateModelDto} from "../../api/models/input/user.input.model";
 
 export class CreateUserCommand{
     constructor(public userCreateModel: UserCreateModelDto) {

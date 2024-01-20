@@ -1,7 +1,7 @@
 
 import {PostRepository} from "../../repositories/post.repository";
 import {CommandHandler, ICommandHandler} from "@nestjs/cqrs";
-import {UpdatePostDto} from "../../api/models/input";
+import {UpdatePostDto} from "../../api/models/input/post-input.model";
 
 export class UpdatePostCommand {
     constructor(public postId: string, public newUpdateRequest: UpdatePostDto) {

@@ -1,9 +1,8 @@
-import {PostType} from "../../../../models/posts-models";
 import {PostRepository} from "../../repositories/post.repository";
 import {BlogRepository} from "../../../blogs/repositories/blog.repository";
 import {CommandHandler, ICommandHandler} from "@nestjs/cqrs";
-import {createPostDto} from "../../api/models/input";
-import {PostViewType} from "../../api/models/output";
+import {createPostDto, PostType} from "../../api/models/input/post-input.model";
+import {PostViewType} from "../../api/models/output/post-output.model";
 
 export class CreatePostCommand {
     constructor(public inputDto: createPostDto) {

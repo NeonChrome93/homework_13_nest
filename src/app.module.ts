@@ -21,10 +21,9 @@ import {UserService} from "./features/users/application/user.service";
 import {CommentController} from "./features/comments/api/comment.controller";
 import {CommentSchema, Comments} from "./features/comments/domain/comment.entity";
 import {CommentsQueryRepository} from "./features/comments/repositories/comment.query.repository";
-import {CommentService} from "./features/comments/application/comment.service";
 import {CommentRepository} from "./features/comments/repositories/comment.repository";
-import {AuthController} from "./features/auth/auth.controller";
-import {AuthService} from "./features/auth/auth.service";
+import {AuthController} from "./features/auth/api/auth.controller";
+import {AuthService} from "./features/auth/application/auth.service";
 import {JwtAdapter} from "./features/auth/adapters/jwt.adapter";
 import {EmailAdapter} from "./features/auth/adapters/email.adapter";
 import {IsUserAlreadyExistConstraint} from "./infrastructure/decorators/user-exist.decorator";
@@ -47,15 +46,30 @@ import {AddLikesByPostUseCase} from "./features/posts/application/usecases/add-l
 import {DeletePostUseCase} from "./features/posts/application/usecases/delete-post.usecase";
 import {CreateUserUseCase} from "./features/users/application/usecases/create-user.usecase";
 import {PassportModule} from "@nestjs/passport";
-import {LocalStrategy} from "./features/auth/local.strategy";
+import {LocalStrategy} from "./features/auth/application/local.strategy";
+import {CreateDeviceUseCase} from "./features/devices/application/usecases/create-device.usecase";
+import {DeleteDeviceUseCase} from "./features/devices/application/usecases/delete-device.usecase";
+import {CreateCommentUseCase} from "./features/comments/application/usecases/create-comment.usecase";
+import {UpdateCommentUseCase} from "./features/comments/application/usecases/update-comment.usecase";
+import {AddReactionUseCase} from "./features/comments/application/usecases/add-reaction.usecase";
+import {DeleteCommentUseCase} from "./features/comments/application/usecases/delete-comment.usecase";
+import {RegistrationUserUseCase} from "./features/auth/application/usecases/registration-user.usecase";
+import {ConfirmEmailUseCase} from "./features/auth/application/usecases/confirm-email.usecase";
+import {ResendingCodeUseCase} from "./features/auth/application/usecases/resending-code.usecase";
+import {PasswordRecoveryUseCase} from "./features/auth/application/usecases/password-recovery.usecase";
+import {NewPasswordSetUseCase} from "./features/auth/application/usecases/new-password-set.usecase";
+import {AuthLoginUseCase} from "./features/auth/application/usecases/auth-login.usecase";
 
 
 
-const services = [AppService,PostService, UserService,CommentService,AuthService,DevicesService]
-const repositories = [BlogQueryRepository, BlogRepository,PostsQueryRepository, PostRepository, UsersQueryRepository, UsersRepository, CommentRepository,CommentsQueryRepository, DevicesRepository,DevicesQueryRepository]
+const services = [AppService,PostService, UserService,AuthService,DevicesService]
+const repositories = [BlogQueryRepository, BlogRepository,PostsQueryRepository, PostRepository, UsersQueryRepository, UsersRepository, CommentRepository,CommentsQueryRepository,
+    DevicesRepository,DevicesQueryRepository]
 const adapters = [JwtAdapter, EmailAdapter]
 const constraints = [IsUserAlreadyExistConstraint,RegistrationConfirmCodeConstraint,RegistrationEmailResendingConstraint, IsBlogExistConstraint]
-const useCases = [CreateBlogUseCase,DeleteBlogUseCase,UpdateBlogUseCase, UpdatePostUseCase, AddLikesByPostUseCase, DeletePostUseCase, CreateUserUseCase ]
+const useCases = [CreateBlogUseCase, DeleteBlogUseCase, UpdateBlogUseCase, UpdatePostUseCase, AddLikesByPostUseCase, DeletePostUseCase, CreateUserUseCase, CreateDeviceUseCase,
+    DeleteDeviceUseCase,  CreateCommentUseCase, UpdateCommentUseCase, AddReactionUseCase, DeleteCommentUseCase, RegistrationUserUseCase, ConfirmEmailUseCase, ResendingCodeUseCase,
+    PasswordRecoveryUseCase, NewPasswordSetUseCase, AuthLoginUseCase  ]
 
 @Module({
     imports: [

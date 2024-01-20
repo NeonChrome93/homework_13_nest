@@ -1,7 +1,7 @@
 import {ObjectId} from "mongodb";
 import mongoose, {HydratedDocument, Types} from "mongoose";
-import {REACTIONS_ENUM} from "../../../models/comments-models";
 import {Prop, Schema, SchemaFactory} from "@nestjs/mongoose";
+import {REACTIONS_ENUM} from "../../comments/api/models/output/comments.output.models";
 
 export type postDbType= {
     _id: ObjectId,
@@ -35,7 +35,7 @@ const statusSchema = SchemaFactory.createForClass(Status);
 @Schema(({collection: 'posts'}))
 export class Post {
     @Prop({required: true,  type: mongoose.Schema.Types.ObjectId })
-    _id: Types.ObjectId
+    _id?: Types.ObjectId
     @Prop()
     title:string
     @Prop()

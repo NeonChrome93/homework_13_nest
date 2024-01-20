@@ -12,19 +12,19 @@ import {getQueryPagination} from "../../../utils/pagination";
 import {PostsQueryRepository} from "../repositories/post.query.repository";
 import {PostService} from "../application/post.service";
 import {PostRepository} from "../repositories/post.repository";
-import {BearerAuthGuard, SoftBearerAuthGuard} from "../../../infrastructure/guards/user-guard";
-import {CommentsQueryRepository} from "../../comments/comment.query.repository";
-import {UpdateCommentDto, updateLikeDto} from "../../../models/comments-models";
-import {User} from "../../users/user.entity";
-import {CommentService} from "../../comments/comment.service";
+import {BearerAuthGuard, SoftBearerAuthGuard} from "../../../infrastructure/guards/user.guard";
+import {CommentsQueryRepository} from "../../comments/repositories/comment.query.repository";
+import {User} from "../../users/domain/user.entity";
 import {UserAll, UserId} from "../../../infrastructure/decorators/get-user.decorator";
-import {BasicAuthGuard} from "../../../infrastructure/guards/basic-auth-guard.service";
+import {BasicAuthGuard} from "../../../infrastructure/guards/basic-auth.guard";
 import {CommandBus} from "@nestjs/cqrs";
 import {UpdatePostCommand} from "../application/usecases/update-post.usecase";
 import {DeletePostCommand} from "../application/usecases/delete-post.usecase";
 import {AddLikesByPostCommand} from "../application/usecases/add-likes-by-post.usecase";
-import {PostsQueryType} from "./models/output";
-import {createPostDto, likesDto, UpdatePostDto} from "./models/input";
+import {PostsQueryType} from "./models/output/post-output.model";
+import {createPostDto, likesDto, UpdatePostDto} from "./models/input/post-input.model";
+import {CreateCommentCommand} from "../../comments/application/usecases/create-comment.usecase";
+import {UpdateCommentDto} from "../../comments/api/models/input/comment.input.model";
 
 
 @Controller('posts')
@@ -32,7 +32,6 @@ export class PostController {
     constructor(private readonly postsQueryRepository: PostsQueryRepository,
                 private readonly postService: PostService,
                 private commandBus: CommandBus,
-                private readonly commentService: CommentService,
                 private readonly postRepository: PostRepository,
                 private readonly commentQueryRepository: CommentsQueryRepository) {
     }
@@ -107,7 +106,7 @@ export class PostController {
 
         const userId = user!._id.toString();
         const userLogin =user!.login;
-        const newComment = await this.commentService.createComment(post._id.toString(), userId, userLogin, dto.content);
+        const newComment = await this.commandBus.execute(new CreateCommentCommand(post._id.toString(), userId, userLogin, dto.content));
         return newComment;
     }
 

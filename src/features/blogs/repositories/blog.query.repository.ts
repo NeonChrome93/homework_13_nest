@@ -5,11 +5,11 @@ import {QueryPaginationType} from "../../../utils/pagination";
 import {Blog, BlogDbType, BlogDocument} from "../domain/blog.entity";
 import {InjectModel} from "@nestjs/mongoose";
 import {PaginationModels} from "../../../models/pagination-models";
-import {PostType} from "../../../models/posts-models";
 import {Post, postDbType, PostDocument} from "../../posts/domain/post.entity";
 import {likesMapper} from "../../../utils/mappers/likes-mapper";
 import {BlogsViewType} from "../api/models/output/blog.output.model";
-import {PostViewType} from "../../posts/api/models/output";
+import {PostViewType} from "../../posts/api/models/output/post-output.model";
+import {PostType} from "../../posts/api/models/input/post-input.model";
 
 
 

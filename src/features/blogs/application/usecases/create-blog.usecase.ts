@@ -1,6 +1,6 @@
 import {Injectable} from "@nestjs/common";
 import {BlogRepository} from "../../repositories/blog.repository";
-import {CreateBlogDto} from "../../api/models/input/create-blog.input.model";
+import {CreateBlogDto} from "../../api/models/input/blog.input.model";
 import {BlogsViewType} from "../../api/models/output/blog.output.model";
 import {Blog} from "../../domain/blog.entity";
 import {CommandHandler, ICommandHandler} from "@nestjs/cqrs";

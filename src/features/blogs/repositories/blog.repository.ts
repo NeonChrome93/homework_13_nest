@@ -4,7 +4,7 @@ import {Injectable} from "@nestjs/common";
 import {InjectModel} from "@nestjs/mongoose";
 import {Blog, BlogDbType, BlogDocument} from "../domain/blog.entity";
 import {blogMapper} from "../../../utils/mappers/blogs-mapper";
-import {UpdateBlogTypeDto} from "../api/models/input/create-blog.input.model";
+import {UpdateBlogTypeDto} from "../api/models/input/blog.input.model";
 import {BlogsViewType} from "../api/models/output/blog.output.model";
 
 

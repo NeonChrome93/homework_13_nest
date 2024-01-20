@@ -1,4 +1,4 @@
-import {UpdateBlogTypeDto} from "../../api/models/input/create-blog.input.model";
+import {UpdateBlogTypeDto} from "../../api/models/input/blog.input.model";
 import {BlogRepository} from "../../repositories/blog.repository";
 import {CommandHandler, ICommandHandler} from "@nestjs/cqrs";
 
