@@ -1,7 +1,7 @@
-import {IfCodeExist} from "../../../../infrastructure/decorators/registration-conformation.decorator";
+import {IfCodeExist} from "../../../../../infrastructure/decorators/registration-conformation.decorator";
 import {IsEmail, IsNotEmpty, IsString, MaxLength, MinLength} from "class-validator";
-import {IfUserExistOrConfirmed} from "../../../../infrastructure/decorators/registration-email-resending.decorator";
-import {Trim} from "../../../../models/custom";
+import {IfUserExistOrConfirmed} from "../../../../../infrastructure/decorators/registration-email-resending.decorator";
+import {Trim} from "../../../../../models/custom";
 
 export class CodeDto  {
     @IfCodeExist({

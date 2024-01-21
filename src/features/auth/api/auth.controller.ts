@@ -29,7 +29,7 @@ import {LocalAuthGuard} from "../../../infrastructure/guards/auth-local.guard";
 import {UserCreateModelDto} from "../../users/api/models/input/user.input.model";
 import {CommandBus} from "@nestjs/cqrs";
 import {RegistrationUserCommand} from "../application/usecases/registration-user.usecase";
-import {CodeDto, EmailDto, NewPasswordDto} from "./models/auth-input.models";
+import {CodeDto, EmailDto, NewPasswordDto} from "./models/input/auth-input.models";
 import {PasswordRecoveryCommand} from "../application/usecases/password-recovery.usecase";
 import {NewPasswordSetCommand} from "../application/usecases/new-password-set.usecase";
 import {ResendingCodeCommand} from "../application/usecases/resending-code.usecase";
