@@ -1,11 +1,12 @@
-import {PostViewType} from "../dist/models/posts-models";
+
 import {INestApplication} from "@nestjs/common";
 import {Test, TestingModule} from "@nestjs/testing";
 import {AppModule} from "../src/app.module";
 import request from "supertest";
-import {appSettings} from "../src/common/config/app.settings";
-import {UserDbModel} from "../dist/users/user.entity";
-import {UserViewModel} from "../src/models/users-models";
+import {appSettings} from "../src/config/app.settings";
+import {PostViewType} from "../src/features/posts/api/models/output/post-output.model";
+import {UserViewModel} from "../src/features/users/api/models/output/user.output.model";
+
 
 const createBlog = {
     name: "Yaroslaw",

@@ -2,7 +2,8 @@ import {INestApplication} from "@nestjs/common";
 import {Test, TestingModule} from "@nestjs/testing";
 import {AppModule} from "../src/app.module";
 import request from "supertest";
-import {PostViewType} from "../src/models/posts-models";
+import {PostViewType} from "../src/features/posts/api/models/output/post-output.model";
+
 
 let postId = ''
 let commentId = ""
@@ -40,6 +41,7 @@ describe('Post API', () => {
 
 
     beforeEach(async () => {
+        console.log('ENV in TESTS', process.env.ENV)
         const moduleFixture: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();

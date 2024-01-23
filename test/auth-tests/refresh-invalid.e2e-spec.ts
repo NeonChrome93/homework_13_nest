@@ -1,13 +1,13 @@
 import {INestApplication} from "@nestjs/common";
 import {Test, TestingModule} from "@nestjs/testing";
-import {AppModule} from "../src/app.module";
+import {AppModule} from "../../src/app.module";
 import request from "supertest";
-import {createNewUserModel, createUser} from "./utils";
+import {createNewUserModel, createUser, wait} from "../utils/utils";
 import {exec} from "child_process";
-import {appSettings} from "../src/common/config/app.settings";
+import {appSettings} from "../../src/config/app.settings";
 
 
-describe('Users API', () => {
+describe('Сheck user refreshToken to be invalid', () => {
     let app: INestApplication;
 
 
@@ -36,36 +36,34 @@ describe('Users API', () => {
             createdAt: expect.any(String)
 
         })
-
-
+        process.env.REFRESH_TIME = '2s'
         const res2 = await request(app.getHttpServer()).post('/auth/login').set(
             'Content-Type', 'application/json'
         ).send({
             loginOrEmail: model.login,
             password: model.password
-        })
+        }).expect(200)
+        //
+         await wait(3)
 
-        expect(res2.body).toEqual({
-           accessToken: expect.any(String)
-        })
+        const res3 = await request(app.getHttpServer()).post('/auth/login').set(
+            'Content-Type', 'application/json'
+        ).send({
+            loginOrEmail: model.login,
+            password: model.password
+        }).expect(200)
+
+
 
         const refreshToken = res2.headers['set-cookie']
-        console.log('rt in test', refreshToken)
-
-        const res3 =  await request(app.getHttpServer()).post('/auth/refresh-token').set("Cookie", refreshToken).expect(200)
-
-        expect(res3.body).toEqual({
-            accessToken: expect.any(String)
-        })
 
 
 
-        // 1 - создать пользователя
-        // 2 - залогиниться - получить рефреш токен (сделать утилитную функциб для кук) и запомнить
-        // 3 - виполнить refresh-token
-        //Set Timeout
+            const res4 = await request(app.getHttpServer()).post('/auth/refresh-token').set("Cookie", refreshToken).expect(401)
+
+
+
+
     })
-
-        // создать два девайса выйти с одного из них и потом попробовать удалить девайс с котрого я вышел
 
 })
