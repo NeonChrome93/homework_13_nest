@@ -8,6 +8,8 @@ import {RegistrationUserUseCase} from "../../src/features/auth/application/useca
 import {EmailAdapter} from "../../src/features/auth/adapters/email.adapter";
 import {ConfirmEmailUseCase} from "../../src/features/auth/application/usecases/confirm-email.usecase";
 import {User} from "../../src/features/users/domain/user.entity";
+import {UsersRepository} from "../../src/features/users/repositories/user.repository";
+import {UserViewModel} from "../../src/features/users/api/models/output/user.output.model";
 
 
 
@@ -35,6 +37,7 @@ describe('Integration test Auth Service',() =>{
         let registrationUserUseCase;
         let confirmEmailUseCase;
         let userModel;
+        let userRepository;
 
         beforeAll(async () => {
             const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -49,6 +52,8 @@ describe('Integration test Auth Service',() =>{
             // createUserUseCase = new CreateUserUseCase(userRepository);
             registrationUserUseCase= moduleFixture.get<RegistrationUserUseCase>(RegistrationUserUseCase)
             confirmEmailUseCase = moduleFixture.get<ConfirmEmailUseCase>(ConfirmEmailUseCase)
+            userRepository = moduleFixture.get<UsersRepository>(UsersRepository)
+
             await app.init();
 
 
@@ -62,10 +67,25 @@ describe('Integration test Auth Service',() =>{
            await request(app.getHttpServer()).delete('/testing/all-data').expect(204)
        })
 
-        it('Confirmation Code', async () => {
-            let user : User = await registrationUserUseCase.execute({userCreateModel:userData });
-            await confirmEmailUseCase.execute({code: "123" });
-            expect(user.isConfirmed).toBe(true)
+        it('confirmation code positive', async () => {
+            let user :  UserViewModel = await registrationUserUseCase.execute({userCreateModel:userData });
+            let repoCode = (await userRepository.readUserById(user.id) as User).confirmationCode
+
+           let confirm =  await confirmEmailUseCase.execute({code: repoCode });
+
+            let userConfirmation = await userRepository.readUserById(user.id)
+            expect(userConfirmation.isConfirmed).toBe(true)
+
+        })
+
+        it('confirmation code negative', async () => {
+            let user :  UserViewModel = await registrationUserUseCase.execute({userCreateModel:userData });
+            let repoCode = (await userRepository.readUserById(user.id) as User).confirmationCode
+
+            let confirm =  await confirmEmailUseCase.execute({code: ' ' });
+
+            let userConfirmation = await userRepository.readUserById(user.id)
+            expect(userConfirmation.isConfirmed).toBe(false)
 
 
         })

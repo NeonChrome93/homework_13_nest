@@ -68,7 +68,7 @@ describe('Integration test Auth Service - Recovery code', () => {
             await request(app.getHttpServer()).delete('/testing/all-data').expect(204)
         })
 
-        it('recovery code', async () => {
+        it('recovery code has been passed', async () => {
             let user: UserViewModel = await registrationUserUseCase.execute({userCreateModel: userData});
             let repoCode = (await userRepository.readUserById(user.id) as User).isConfirmed === true
             await confirmEmailUseCase.execute({code: '123' });
@@ -76,20 +76,28 @@ describe('Integration test Auth Service - Recovery code', () => {
 
             expect(userAlreadyConfirmation.isConfirmed).toBe(false)
 
-            passwordRecoveryUseCase.execute({email: userAlreadyConfirmation.email})
-            let userAfterRecovery = await userRepository.readUserByEmail( userAlreadyConfirmation.email)
+            await passwordRecoveryUseCase.execute({email: userAlreadyConfirmation.email})
+            let userAfterRecovery = await userRepository.readUserByEmail(userAlreadyConfirmation.email)
+
             let setPassword = await newPasswordSetUseCase.execute({newPassword: '12345', recoveryCode: userAfterRecovery.passwordRecoveryCode})
 
             expect(userAfterRecovery .passwordRecoveryCode === null && userAfterRecovery .expirationDateOfRecoveryCode === null)
             expect(setPassword).toBe(true)
-
-
-
-
-
-
         })
 
+        it('recovery code has not been passed', async () => {
+            let user: UserViewModel = await registrationUserUseCase.execute({userCreateModel: userData});
+            let userAlreadyConfirmation = await userRepository.readUserById(user.id)
+            await passwordRecoveryUseCase.execute({email: userAlreadyConfirmation.email})
+            let userAfterRecovery = await userRepository.readUserByEmail( userAlreadyConfirmation.email)
+            let setPassword = await newPasswordSetUseCase.execute({newPassword: '', recoveryCode: userAfterRecovery.passwordRecoveryCode})
+            expect(userAfterRecovery .passwordRecoveryCode && userAfterRecovery .expirationDateOfRecoveryCode)
+            expect(setPassword).toBe(false)
+        })
+
+
     })
+
+
 
 })

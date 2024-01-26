@@ -56,13 +56,7 @@ describe('Сheck user refreshToken to be invalid', () => {
 
 
         const refreshToken = res2.headers['set-cookie']
-
-
-
-            const res4 = await request(app.getHttpServer()).post('/auth/refresh-token').set("Cookie", refreshToken).expect(401)
-
-
-
+        const res4 = await request(app.getHttpServer()).post('/auth/refresh-token').set("Cookie", refreshToken).expect(401)
 
     })
 

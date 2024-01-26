@@ -9,7 +9,7 @@ import {appSettings} from "./config/app.settings";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+    console.log('main.ts ENV', process.env.ENV)
   appSettings(app)
   await app.listen(5000);
 }

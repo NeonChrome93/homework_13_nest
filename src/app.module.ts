@@ -59,6 +59,7 @@ import {ResendingCodeUseCase} from "./features/auth/application/usecases/resendi
 import {PasswordRecoveryUseCase} from "./features/auth/application/usecases/password-recovery.usecase";
 import {NewPasswordSetUseCase} from "./features/auth/application/usecases/new-password-set.usecase";
 import {AuthLoginUseCase} from "./features/auth/application/usecases/auth-login.usecase";
+import {DeleteUserUseCase} from "./features/users/application/usecases/delete-user.usecase";
 
 
 
@@ -67,7 +68,7 @@ const repositories = [BlogQueryRepository, BlogRepository,PostsQueryRepository, 
     DevicesRepository,DevicesQueryRepository]
 const adapters = [JwtAdapter, EmailAdapter]
 const constraints = [IsUserAlreadyExistConstraint,RegistrationConfirmCodeConstraint,RegistrationEmailResendingConstraint, IsBlogExistConstraint]
-const useCases = [CreateBlogUseCase, DeleteBlogUseCase, UpdateBlogUseCase, UpdatePostUseCase, AddLikesByPostUseCase, DeletePostUseCase, CreateUserUseCase, CreateDeviceUseCase,
+const useCases = [CreateBlogUseCase, DeleteBlogUseCase, UpdateBlogUseCase, UpdatePostUseCase, AddLikesByPostUseCase, DeletePostUseCase, CreateUserUseCase, DeleteUserUseCase,  CreateDeviceUseCase,
     DeleteDeviceUseCase,  CreateCommentUseCase, UpdateCommentUseCase, AddReactionUseCase, DeleteCommentUseCase, RegistrationUserUseCase, ConfirmEmailUseCase, ResendingCodeUseCase,
     PasswordRecoveryUseCase, NewPasswordSetUseCase, AuthLoginUseCase  ]
 
@@ -80,7 +81,7 @@ const useCases = [CreateBlogUseCase, DeleteBlogUseCase, UpdateBlogUseCase, Updat
         PassportModule,
         CqrsModule,
         ConfigModule.forRoot(),
-        MongooseModule.forRoot(process.env.LOCAL_DB ==='true' ?  process.env.LOCAL_MONGO_URL! : process.env.MONGO_URL! ),
+        MongooseModule.forRoot(process.env.ENV === 'TESTING' ? process.env.TESTING_MONGO_URL! : process.env.LOCAL_MONGO_URL!),
         MongooseModule.forFeature([{name: Blog.name, schema: BlogSchema}, {name: Post.name, schema: PostSchema},{name: User.name, schema: UserSchema},{name: Comments.name, schema: CommentSchema}, {name: Device.name, schema: DevicesSchema}])],
     controllers: [AppController, BlogController, PostController,UserController, CommentController, DelController, AuthController, DeviceController],
     providers: [ ...services, ...repositories, ...constraints, ...adapters,...useCases,

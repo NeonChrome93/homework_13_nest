@@ -8,6 +8,10 @@ import mongoose from "mongoose";
 import request from "supertest";
 import {User} from "../../src/features/users/domain/user.entity";
 import {PasswordRecoveryUseCase} from "../../src/features/auth/application/usecases/password-recovery.usecase";
+import {UsersRepository} from "../../src/features/users/repositories/user.repository";
+import {UserViewModel} from "../../src/features/users/api/models/output/user.output.model";
+import {randomUUID} from "crypto";
+import e from "express";
 
 
 const userData = {
@@ -20,19 +24,21 @@ const userData = {
 let SendEmailMock = jest.fn()
 
 const EmailAdapterMock = {
-    sendEmail: SendEmailMock
+    sendEmail: SendEmailMock,
+    resendEmail:  SendEmailMock
 }
-//commandBus = new CommandBus(moduleRef)
-
-describe('Integration test Auth Service',() =>{
 
 
+describe('Integration test Auth Service - Recovery code',() =>{
 
-    describe('Registration user',  ()=> {
+
+
+    describe('Recovery code',  ()=> {
         let app;
         let registrationUserUseCase;
         let confirmEmailUseCase;
-        let PasswordRecoveryUseCase;
+        let passwordRecoveryUseCase;
+        let userRepository;
 
         beforeAll(async () => {
             const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -47,7 +53,9 @@ describe('Integration test Auth Service',() =>{
             // createUserUseCase = new CreateUserUseCase(userRepository);
             registrationUserUseCase= moduleFixture.get<RegistrationUserUseCase>(RegistrationUserUseCase)
             confirmEmailUseCase = moduleFixture.get<ConfirmEmailUseCase>(ConfirmEmailUseCase)
-            PasswordRecoveryUseCase = moduleFixture.get<PasswordRecoveryUseCase>(PasswordRecoveryUseCase)
+            passwordRecoveryUseCase = moduleFixture.get<PasswordRecoveryUseCase>(PasswordRecoveryUseCase)
+            userRepository = moduleFixture.get<UsersRepository>(UsersRepository)
+
             await app.init();
 
 
@@ -61,10 +69,24 @@ describe('Integration test Auth Service',() =>{
             await request(app.getHttpServer()).delete('/testing/all-data').expect(204)
         })
 
-        it('recovery code', async () => {
-            let user : User = await registrationUserUseCase.execute({userCreateModel:userData });
-            await confirmEmailUseCase.execute({code: "" });
-            expect( user.isConfirmed ).toBe(false)
+        it('should return positive recovery code', async () => {
+            let user : UserViewModel = await registrationUserUseCase.execute({userCreateModel:userData });
+            let userNotConfirmation = await userRepository.readUserById(user.id)
+            let recovery = await passwordRecoveryUseCase.execute({email: userNotConfirmation.email})
+
+            expect(recovery).toBe(true)
+            expect(EmailAdapterMock.resendEmail).toBeCalled()
+
+        })
+
+        it('should return negative recovery code', async () => {
+            let user : UserViewModel = await registrationUserUseCase.execute({userCreateModel:userData });
+            let repoCode = (await userRepository.readUserById(user.id) as User).confirmationCode === ''
+            await confirmEmailUseCase.execute({code: repoCode });
+            let userNotConfirmation = await userRepository.readUserById(user.id)
+
+            expect( userNotConfirmation.isConfirmed ).toBe(false)
+
 
 
         })
