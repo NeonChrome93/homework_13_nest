@@ -64,3 +64,8 @@ export const wait = (sec: number): Promise<boolean> => {
     setTimeout(() => res(true), sec * 1000);
   });
 };
+
+export const unpackingToken = (res) =>  res.headers['set-cookie'][0]
+    .split(',')
+    .map(item => item.split(';')[0])
+    .join('; ').split('=')[1]
