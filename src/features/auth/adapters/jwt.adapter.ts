@@ -34,10 +34,10 @@ export class JwtAdapter {
 
     }
 
-    getDeviceIdByToken(token: string) {
+    getPayloadByToken(token: string) {
         try {
             const result: any = jwt.verify(token, process.env.JWT_SECRET || '123')
-            return result //==={userId: user._id, deviceId: deviceId}
+            return result //\==={userId: user._id, deviceId: deviceId}
 
 
         } catch (error) {

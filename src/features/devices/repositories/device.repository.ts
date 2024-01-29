@@ -14,9 +14,11 @@ export class DevicesRepository {
     }
 
     async isDeviceExistByUserIdAndDeviceId(deviceId: string, userId: string): Promise<boolean> {
-        const result = await this.DeviceModel.findOne({deviceId, userId}).lean()
+        const result  = await this.DeviceModel.findOne({deviceId, userId}).lean()
         return result !== null
     }
+
+
 
 
     async findDevice(deviceId: string): Promise<Device | null> {

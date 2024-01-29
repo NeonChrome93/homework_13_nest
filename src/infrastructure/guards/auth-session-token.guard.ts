@@ -22,7 +22,7 @@ export class AuthSessionTokenGuard implements CanActivate {
         }
 
 
-        const payload = await this.jwtService.getDeviceIdByToken(refreshToken);
+        const payload = await this.jwtService.getPayloadByToken(refreshToken);
 
         if (!payload) {
             throw new UnauthorizedException();

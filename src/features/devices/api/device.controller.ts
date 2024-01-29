@@ -34,7 +34,7 @@ export class DeviceController {
     @UseGuards(AuthSessionTokenGuard)
     async deleteDevicesExcludeCurrent(@UserAll() user: User, @DeviceId() deviceId: string) :Promise<void> {
         //console.log(req.deviceId)
-        await this.devicesService.deleteDeviceExpectCurrent(user!._id.toString(), deviceId!.toString())
+        await this.devicesService.deleteDeviceExceptCurrent(user!._id.toString(), deviceId!.toString())
 
     }
 

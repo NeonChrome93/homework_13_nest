@@ -11,7 +11,7 @@ export class DevicesService {
         return await this.devicesRepository.findDevice(deviceId)
     }
 
-    async deleteDeviceExpectCurrent(userId: string, deviceId: string) {
+    async deleteDeviceExceptCurrent(userId: string, deviceId: string) {
 
         return await this.devicesRepository.deleteDeviceExpectCurrent(userId, deviceId)
     }

@@ -43,7 +43,7 @@ export class AuthService  {
     // }
 
     async refresh(user: User, refreshToken: string): Promise<{ accessToken: string, newRefreshToken: string } | null> {
-        const payload = this.jwtService.getDeviceIdByToken(refreshToken)
+        const payload = this.jwtService.getPayloadByToken(refreshToken)
         const accessToken = this.jwtService.createJWT(user);
         const newRefreshToken = this.jwtService.generateRefreshToken(user, payload.deviceId);
         const lastActiveDate = this.jwtService.lastActiveDate(newRefreshToken);

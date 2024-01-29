@@ -6,6 +6,7 @@ export class  ConfirmEmailCommand {
     }
 }
 
+//проверить подтверждение кода поле isComfirmed: true
 @CommandHandler(ConfirmEmailCommand)
 export class ConfirmEmailUseCase implements ICommandHandler<ConfirmEmailCommand> {
     constructor(private readonly usersRepository: UsersRepository) {

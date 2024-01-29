@@ -22,7 +22,8 @@ export class RegistrationUserUseCase implements ICommandHandler<RegistrationUser
                 private readonly usersRepository: UsersRepository) {
     }
 
-    async execute(command: RegistrationUserCommand): Promise<UserViewModel> {
+    async execute(command: RegistrationUserCommand): Promise<UserViewModel | null> {
+        //TODO: вынесвытнести в отдельный сервис
         const passwordSalt = await bcrypt.genSalt(10);
         const passwordHash = await bcrypt.hash(command.userCreateModel.password, passwordSalt)
 
@@ -38,12 +39,17 @@ export class RegistrationUserUseCase implements ICommandHandler<RegistrationUser
             expirationDateOfRecoveryCode: null,
             passwordRecoveryCode: null
         }
+         // const user = new this.UserModel({newUser})
+        //this.usersRepository.save()
         await this.usersRepository.createUser(newUser);
-        try {
-            this.emailService.sendEmail(newUser.email, newUser.confirmationCode, 'It is your code')
-        } catch (e) {
 
+        //eventBus.publish(new UserCreatedEvent(email: string))
+
+        try {
+         this.emailService.sendEmail(newUser.email, newUser.confirmationCode, 'It is your code')
+        } catch (e) {
             console.log('registration user email error', e);
+            return null
         }
         return {
             id: newUser._id.toString(),

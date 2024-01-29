@@ -10,6 +10,7 @@ constructor(@InjectModel(User.name) private UserModel: Model<UserDocument>) {
 }
 
     async readUserById(id: string): Promise<User | null> {
+        console.log('userid', id)
         const user: User | null = await this.UserModel.findOne({_id: new ObjectId(id)});
         if (!user) {
             return null;
