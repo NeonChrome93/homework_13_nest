@@ -10,8 +10,7 @@ import {ConfirmEmailUseCase} from "../../src/features/auth/application/usecases/
 import {User} from "../../src/features/users/domain/user.entity";
 import {UsersRepository} from "../../src/features/users/repositories/user.repository";
 import {UserViewModel} from "../../src/features/users/api/models/output/user.output.model";
-
-
+import {getTestingApp} from "../utils/utils";
 
 
 const userData = {
@@ -21,11 +20,6 @@ const userData = {
     password: "123456"
 }
 
-let SendEmailMock = jest.fn()
-
-const EmailAdapterMock = {
-    sendEmail: SendEmailMock
-}
 //commandBus = new CommandBus(moduleRef)
 
 describe('Integration test Auth Service',() =>{
@@ -40,12 +34,8 @@ describe('Integration test Auth Service',() =>{
         let userRepository;
 
         beforeAll(async () => {
-            const moduleFixture: TestingModule = await Test.createTestingModule({
-                imports: [AppModule],
-            }).overrideProvider(EmailAdapter).useValue(EmailAdapterMock).compile();
-
-            app = moduleFixture.createNestApplication();
-            appSettings(app)
+const {app: testApp, moduleFixture} = await getTestingApp();
+            app = testApp;
 
             // userModel = InjectModel(User.name);
             // userRepository = new UsersRepository(userModel)
@@ -53,9 +43,6 @@ describe('Integration test Auth Service',() =>{
             registrationUserUseCase= moduleFixture.get<RegistrationUserUseCase>(RegistrationUserUseCase)
             confirmEmailUseCase = moduleFixture.get<ConfirmEmailUseCase>(ConfirmEmailUseCase)
             userRepository = moduleFixture.get<UsersRepository>(UsersRepository)
-
-            await app.init();
-
 
         });
 

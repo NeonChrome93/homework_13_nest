@@ -1,6 +1,28 @@
 import request from "supertest";
 import {INestApplication} from "@nestjs/common";
 import {UserViewModel} from "../../src/features/users/api/models/output/user.output.model";
+import {Test, TestingModule} from "@nestjs/testing";
+import {AppModule} from "../../src/app.module";
+import {EmailAdapter} from "../../src/features/auth/adapters/email.adapter";
+import {appSettings} from "../../src/config/app.settings";
+
+
+let SendEmailMock = jest.fn()
+
+const EmailAdapterMock = {
+  sendEmail: SendEmailMock
+}
+
+export const getTestingApp = async () => {
+  const moduleFixture: TestingModule = await Test.createTestingModule({
+    imports: [AppModule],
+  }).overrideProvider(EmailAdapter).useValue(EmailAdapterMock).compile();
+  const app = moduleFixture.createNestApplication();
+  appSettings(app)
+
+  await app.init();
+  return {app, moduleFixture }
+}
 
 const authBasicHeaders = {
   "Authorization": "Basic YWRtaW46cXdlcnR5",

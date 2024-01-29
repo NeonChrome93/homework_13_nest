@@ -11,6 +11,7 @@ import request from "supertest";
 import {UserViewModel} from "../../src/features/users/api/models/output/user.output.model";
 import {User} from "../../src/features/users/domain/user.entity";
 import {NewPasswordSetUseCase} from "../../src/features/auth/application/usecases/new-password-set.usecase";
+import {getTestingApp} from "../utils/utils";
 
 const userData = {
 
@@ -19,12 +20,6 @@ const userData = {
     password: "123456"
 }
 
-let SendEmailMock = jest.fn()
-
-const EmailAdapterMock = {
-    sendEmail: SendEmailMock,
-    resendEmail: SendEmailMock
-}
 
 
 describe('Integration test Auth Service - Recovery code', () => {
@@ -39,12 +34,8 @@ describe('Integration test Auth Service - Recovery code', () => {
         let newPasswordSetUseCase;
 
         beforeAll(async () => {
-            const moduleFixture: TestingModule = await Test.createTestingModule({
-                imports: [AppModule],
-            }).overrideProvider(EmailAdapter).useValue(EmailAdapterMock).compile();
-
-            app = moduleFixture.createNestApplication();
-            appSettings(app)
+            const {app: testApp, moduleFixture} = await getTestingApp();
+            app = testApp;
 
             // userModel = InjectModel(User.name);
             // userRepository = new UsersRepository(userModel)

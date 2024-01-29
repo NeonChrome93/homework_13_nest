@@ -7,11 +7,12 @@ import request from "supertest";
 import {UsersRepository} from "../src/features/users/repositories/user.repository";
 import {DevicesRepository} from "../src/features/devices/repositories/device.repository";
 import {JwtAdapter} from "../src/features/auth/adapters/jwt.adapter";
-import {log} from "util";
 import {Device} from "../src/features/devices/domain/device.entity";
-import any = jasmine.any;
+
+
 
 let deviceGlobal: Device | null = null
+let token = '';
 
 
 describe('Create device, delete device by id, delete all devices except the current one', () => {
@@ -59,9 +60,11 @@ describe('Create device, delete device by id, delete all devices except the curr
         //     refreshToken: expect.any(String)
         // })
 
-
+        const refreshToken = login.headers['set-cookie']
+        token = refreshToken
 
         const refreshTokenArr = unpackingToken(login)
+
 
         console.log('refreshTokenSubstr', refreshTokenArr)
         let payload = await jwtAdapter.getPayloadByToken(refreshTokenArr)
@@ -69,6 +72,7 @@ describe('Create device, delete device by id, delete all devices except the curr
         console.log('deviceId', payload.deviceId)
 
         let device = await devicesRepository.findDevice(payload.deviceId)
+        console.log("device", device)
         deviceGlobal =device
 
         expect(device.title).toBe('Chrome')
@@ -77,7 +81,60 @@ describe('Create device, delete device by id, delete all devices except the curr
     })
 
     it('Get devices', async () => {
-        await request(app.getHttpServer()).get('security/devices').expect(200)
+       await request(app.getHttpServer()).post('/auth/refresh-token').set("Cookie", token).expect(200)
+        //console.log('accessToken', accessToken.body.accessToken)
+        let response = await request(app.getHttpServer()).get('/security/devices').set("Cookie", token).expect(200)
+        expect(response.body).toEqual(expect.arrayContaining([
+            expect.objectContaining({title: 'Chrome'})
+        ]))
     })
+
+    it('Delete Device by id', async () => {
+        await request(app.getHttpServer()).delete(`/security/devices/${deviceGlobal?.deviceId}`).set("Cookie", token).expect(204)
+    });
+
+    // it('Delete Device 403 incorrect', async () => {
+    //
+    //     await request(app.getHttpServer()).delete(`/security/devices/${deviceGlobal?.deviceId}`).set("Cookie", token).send({userId: "Take" }).expect(403)
+    // });
+
+    it('Delete all devices except current  ', async () =>{
+        const model = createNewUserModel();
+        const user = await createUser(app, model);
+
+        expect(user).toEqual({
+
+            id: expect.any(String),
+            login: model.login,
+            email: model.email,
+            createdAt: expect.any(String)
+
+        })
+
+        process.env.REFRESH_TIME = '1m'
+        const loginDevice1 = await request(app.getHttpServer()).post('/auth/login').set(
+            'User-Agent', 'Edge'
+        ).send({
+            loginOrEmail: model.login,
+            password: model.password
+        })
+
+        const loginDevice2 = await request(app.getHttpServer()).post('/auth/login').set(
+            'User-Agent', 'Mozilla'
+        ).send({
+            loginOrEmail: model.login,
+            password: model.password
+        })
+
+        const refreshToken1 = loginDevice1.headers['set-cookie']
+        const refreshToken2 = loginDevice2.headers['set-cookie']
+
+        await request(app.getHttpServer()).delete('/security/devices').set("Cookie", refreshToken1).expect(204)
+        let response = await request(app.getHttpServer()).get('/security/devices').set("Cookie", refreshToken1).expect(200)
+        expect(response.body).toEqual(expect.arrayContaining([
+            expect.not.objectContaining({title: 'Mozilla'})
+        ]))
+
+    });
 
 })
