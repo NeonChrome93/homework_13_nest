@@ -64,15 +64,11 @@ describe('Create device, delete device by id, delete all devices except the curr
         token = refreshToken
 
         const refreshTokenArr = unpackingToken(login)
-
-
-        console.log('refreshTokenSubstr', refreshTokenArr)
         let payload = await jwtAdapter.getPayloadByToken(refreshTokenArr)
 
         console.log('deviceId', payload.deviceId)
 
         let device = await devicesRepository.findDevice(payload.deviceId)
-        console.log("device", device)
         deviceGlobal =device
 
         expect(device.title).toBe('Chrome')
@@ -93,10 +89,56 @@ describe('Create device, delete device by id, delete all devices except the curr
         await request(app.getHttpServer()).delete(`/security/devices/${deviceGlobal?.deviceId}`).set("Cookie", token).expect(204)
     });
 
-    // it('Delete Device 403 incorrect', async () => {
-    //
-    //     await request(app.getHttpServer()).delete(`/security/devices/${deviceGlobal?.deviceId}`).set("Cookie", token).send({userId: "Take" }).expect(403)
-    // });
+    it('Delete Device 403 incorrect', async () => {
+        const model = createNewUserModel();
+        const user = await createUser(app, model);
+
+        expect(user).toEqual({
+
+            id: expect.any(String),
+            login: model.login,
+            email: model.email,
+            createdAt: expect.any(String)
+
+        })
+
+        const model2 = createNewUserModel();
+        const user2 = await createUser(app, model2);
+
+        expect(user2).toEqual({
+
+            id: expect.any(String),
+            login: model2.login,
+            email: model2.email,
+            createdAt: expect.any(String)
+
+        })
+
+        const loginUser1 = await request(app.getHttpServer()).post('/auth/login').set(
+            'User-Agent', 'Edge'
+        ).send({
+            loginOrEmail: model.login,
+            password: model.password
+        })
+        console.log('loginUser',loginUser1)
+        const loginUser2 = await request(app.getHttpServer()).post('/auth/login').set(
+            'User-Agent', 'Mozilla'
+        ).send({
+            loginOrEmail: model2.login,
+            password: model2.password
+        })
+        console.log('loginUser2',loginUser2)
+
+        //const refreshUser1 = loginUser1.headers['set-cookie']
+        const refreshUser2 = loginUser2.headers['set-cookie']
+
+        const refreshTokenUser1 = unpackingToken(loginUser1)
+        let payloadTokenUser1 = await jwtAdapter.getPayloadByToken(refreshTokenUser1)
+
+
+
+        await request(app.getHttpServer()).delete(`/security/devices/${payloadTokenUser1?.deviceId}`).set("Cookie",  refreshUser2).expect(403)
+    });
 
     it('Delete all devices except current  ', async () =>{
         const model = createNewUserModel();
