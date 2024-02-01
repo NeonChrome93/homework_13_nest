@@ -22,6 +22,10 @@ describe('Users API', () => {
         await app.init();
     });
 
+    it('deleteAll', async ()=> {
+        await request(app.getHttpServer()).delete('/testing/all-data').expect(204)
+    })
+
     it('Check user refreshToken to be invalid if it was refreshed before', async () => {
 
 

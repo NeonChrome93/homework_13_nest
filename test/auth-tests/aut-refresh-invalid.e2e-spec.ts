@@ -22,6 +22,10 @@ describe('Сheck user refreshToken to be invalid', () => {
         await app.init();
     });
 
+    it('deleteAll', async ()=> {
+        await request(app.getHttpServer()).delete('/testing/all-data').expect(204)
+    })
+
     it('check user refreshToken to be invalid if it was refreshed before', async () => {
 
 
@@ -55,7 +59,7 @@ describe('Сheck user refreshToken to be invalid', () => {
 
 
 
-        const refreshToken = res2.headers['set-cookie'].ref
+        const refreshToken = res2.headers['set-cookie']
         const res4 = await request(app.getHttpServer()).post('/auth/refresh-token').set("Cookie", refreshToken).expect(401)
 
     })
