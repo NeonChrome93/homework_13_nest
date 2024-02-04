@@ -2,23 +2,15 @@ name: GitHub Actions Vercel Preview Deployment
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  APP_MONGO_DB: mongodb+srv://daarksky1919:necron23@my-db.t8klcla.mongodb.net/blogs-posts?retryWrites=true&w=majority
 on:
   push:
     branches:
       - staging
-
 jobs:
   Tests:
     name: Tests # название конктретной работы в pipeline
     runs-on: ubuntu-latest
-    services:
-       mongo:
-        image: mongo
-        env:
-          MONGO_INITDB_DATABASE: ${APP_MONGO_DB}
-        ports:
-          - 27017:27017
+
     steps:
       - name: Checkout  # клонируем репозиторый
         uses: actions/checkout@v2
