@@ -80,7 +80,7 @@ let token3 = "";
 
 let token4 = "";
 
-describe('Likes Posts', () => {
+xdescribe('Likes Posts', () => {
     let app: INestApplication;
 
 

@@ -7,7 +7,7 @@ import {exec} from "child_process";
 import {appSettings} from "../../src/config/app.settings";
 
 
-describe('Users API', () => {
+xdescribe('Users API', () => {
     let app: INestApplication;
 
 

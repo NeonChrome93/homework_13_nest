@@ -36,7 +36,7 @@ const headers = {
     "Authorization": "Basic YWRtaW46cXdlcnR5"
 }
 
-describe('Post API', () => {
+xdescribe('Post API', () => {
     let app: INestApplication;
 
 

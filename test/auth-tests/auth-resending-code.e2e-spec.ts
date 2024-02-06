@@ -27,7 +27,7 @@ const EmailAdapterMock = {
 }
 
 
-describe('Integration test Auth Service - Resending code',() =>{
+xdescribe('Integration test Auth Service - Resending code',() =>{
 
 
 

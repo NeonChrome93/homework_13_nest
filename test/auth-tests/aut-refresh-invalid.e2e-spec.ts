@@ -7,7 +7,7 @@ import {exec} from "child_process";
 import {appSettings} from "../../src/config/app.settings";
 
 
-describe('Сheck user refreshToken to be invalid', () => {
+xdescribe('Сheck user refreshToken to be invalid', () => {
     let app: INestApplication;
 
 

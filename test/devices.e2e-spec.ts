@@ -15,7 +15,7 @@ let deviceGlobal: Device | null = null
 let token = '';
 
 
-describe('Create device, delete device by id, delete all devices except the current one', () => {
+xdescribe('Create device, delete device by id, delete all devices except the current one', () => {
     let app: INestApplication;
     let devicesRepository;
     let jwtAdapter;

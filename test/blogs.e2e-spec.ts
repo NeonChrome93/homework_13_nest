@@ -3,7 +3,9 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import {appSettings} from "../src/config/app.settings";
+import { MongoMemoryServer } from 'mongodb-memory-server';
 import {MongooseModule} from "@nestjs/mongoose";
+import {createTestApp} from "./settings/create-test.app";
 
 
 
@@ -28,29 +30,12 @@ const headers = {
 describe.skip('BlogAPI (e2e)', () => {
   let app: INestApplication;
   let server;
-  let testingServer;
 
-  beforeEach(async () => {
 
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [
-        MongooseModule.forRootAsync({
-          useFactory: async () => {
-            testingServer = await MongoMemoryServer.create();
-            const uri = testingServer.getUri();
+  beforeAll(async () => {
 
-            return {
-              uri: uri,
-            };
-          },
-        }),
-        AppModule,
-      ],
-    }).compile();
+    app = await createTestApp()
 
-    app = moduleFixture.createNestApplication();
-    appSettings(app)
-    await app.init();
     server = app.getHttpServer()
 
 

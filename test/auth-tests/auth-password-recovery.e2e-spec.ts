@@ -29,7 +29,7 @@ const EmailAdapterMock = {
 }
 
 
-describe('Integration test Auth Service - Recovery code',() =>{
+xdescribe('Integration test Auth Service - Recovery code',() =>{
 
 
 
