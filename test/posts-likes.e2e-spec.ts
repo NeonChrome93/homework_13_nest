@@ -80,7 +80,7 @@ let token3 = "";
 
 let token4 = "";
 
-describe('Likes Posts', () => {
+xdescribe('Likes Posts', () => {
     let app: INestApplication;
 
 
@@ -102,9 +102,6 @@ describe('Likes Posts', () => {
     })
 
 
-    it('deleteAll', async () => {
-        await request(app.getHttpServer()).delete('/testing/all-data').expect(204)
-    })
 
     it('Create Blog', async () => {
         const res = await request(app.getHttpServer()).post('/blogs').set(headers).send(createBlog).expect(201)

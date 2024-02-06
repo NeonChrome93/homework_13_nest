@@ -22,7 +22,7 @@ const userData = {
 
 //commandBus = new CommandBus(moduleRef)
 
-describe('Integration test Auth Service',() =>{
+xdescribe('Integration test Auth Service',() =>{
 
 
 

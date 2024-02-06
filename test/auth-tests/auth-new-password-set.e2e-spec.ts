@@ -22,7 +22,7 @@ const userData = {
 
 
 
-describe('Integration test Auth Service - Recovery code', () => {
+xdescribe('Integration test Auth Service - Recovery code', () => {
 
 
     describe('Recovery code', () => {

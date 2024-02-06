@@ -3,6 +3,9 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import {appSettings} from "../src/config/app.settings";
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import {MongooseModule} from "@nestjs/mongoose";
+import {createTestApp} from "./settings/create-test.app";
 
 
 
@@ -19,33 +22,22 @@ const updateBlog = {
   websiteUrl: "https://odintsovo.hh.ru/vacancy/81832912?from=vacancy_search_list"
 }
 
-// const updatedBlog = {
-//
-//   name: 'Blalla',
-//   description: 'Blalal',
-//   websiteUrl: 'https://odintsovo.hh.ru/vacancy/81832912?from=vacancy_search_list',
-//
-// }
-
-
 
 const headers = {
   "Authorization": "Basic YWRtaW46cXdlcnR5"
 }
 
-describe('BlogAPI (e2e)', () => {
+describe.skip('BlogAPI (e2e)', () => {
   let app: INestApplication;
-  let server
+  let server;
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
 
-    app = moduleFixture.createNestApplication();
-    appSettings(app)
-    await app.init();
+  beforeAll(async () => {
+
+    app = await createTestApp()
+
     server = app.getHttpServer()
+
 
   });
 

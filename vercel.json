@@ -1,10 +1,12 @@
 {
-  "version": 1,
-  "name": "homework 14 Nest",
+  "version": 2,
+  "name": "homework_13_nest",
   "builds": [
     { "src": "src/main.ts", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "src/main.ts" }
+    { "src": "(.*)", "dest": "src/main.ts",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH"]
+    }
   ]
 }

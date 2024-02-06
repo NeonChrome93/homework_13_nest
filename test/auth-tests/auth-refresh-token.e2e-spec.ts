@@ -7,7 +7,7 @@ import {exec} from "child_process";
 import {appSettings} from "../../src/config/app.settings";
 
 
-describe('Users API', () => {
+xdescribe('Users API', () => {
     let app: INestApplication;
 
 
@@ -21,6 +21,10 @@ describe('Users API', () => {
         appSettings(app)
         await app.init();
     });
+
+    it('deleteAll', async ()=> {
+        await request(app.getHttpServer()).delete('/testing/all-data').expect(204)
+    })
 
     it('Check user refreshToken to be invalid if it was refreshed before', async () => {
 

@@ -81,7 +81,7 @@ const useCases = [CreateBlogUseCase, DeleteBlogUseCase, UpdateBlogUseCase, Updat
         PassportModule,
         CqrsModule,
         ConfigModule.forRoot(),
-        MongooseModule.forRoot(process.env.ENV === 'TESTING' ? process.env.TESTING_MONGO_URL! : process.env.LOCAL_MONGO_URL!),
+        MongooseModule.forRoot(process.env.ENV === 'TESTING' ? process.env.MONGO_URL! : process.env.MONGO_URL!),
         MongooseModule.forFeature([{name: Blog.name, schema: BlogSchema}, {name: Post.name, schema: PostSchema},{name: User.name, schema: UserSchema},{name: Comments.name, schema: CommentSchema}, {name: Device.name, schema: DevicesSchema}])],
     controllers: [AppController, BlogController, PostController,UserController, CommentController, DelController, AuthController, DeviceController],
     providers: [ ...services, ...repositories, ...constraints, ...adapters,...useCases,

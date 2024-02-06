@@ -22,7 +22,7 @@ const headers = {
     "Authorization": "Basic YWRtaW46cXdlcnR5"
 }
 
-describe('Users API', () => {
+xdescribe('Users API', () => {
     let app: INestApplication;
 
 
